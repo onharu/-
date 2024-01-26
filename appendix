@@ -1,0 +1,100 @@
+\chapter{実装コード}
+
+実装に必要なコードを以下に記す。(詳細は\url{https://github.com/onharu/mypytest})
+\section{mypytest.py}
+\begin{lstlisting}
+import sys
+import Mypycustom
+import Mypy.build, Mypy.visitor, Mypy.nodes, Mypy.checker, Mypy.types, Mypy.type_visitor
+import projection
+
+result : Mypy.build.BuildResult | None = mypycustom.main(["--show-traceback", "--custom-typeshed", "./typeshed", "ex.py"])
+
+if result is None: 
+    sys.exit(1)
+
+src = result.graph["ex"] 
+typechecker = src.type_checker()
+
+if src.tree is None:
+    sys.exit(1)
+    
+for stm in projection.projection(src.tree.defs,"A",typechecker):
+    print(stm)
+\end{lstlisting}
+
+\section{mypycustom.py}
+
+\begin{lstlisting}
+from __future__ import annotations
+import Mypy.main,Mypy.build
+import os
+import sys
+import time
+from typing import TextIO
+from typing_extensions import Final
+from Mypy import util
+from Mypy.fscache import FileSystemCache
+from typing import TextIO
+
+orig_stat: Final = os.stat
+MEM_PROFILE: Final = False  # If True, dump memory profile
+
+def main(args: list[str] | None = None) -> Mypy.build.BuildResult | None:
+    stdout: TextIO = sys.stdout
+    stderr: TextIO = sys.stderr
+    
+    util.check_python_version("Mypy")
+    t0 = time.time()
+    sys.setrecursionlimit(2**14)
+    if args is None:
+        args = sys.argv[1:]
+
+    fscache = FileSystemCache()
+    sources, options = Mypy.main.process_options(args, stdout=stdout, stderr=stderr, fscache=fscache)
+
+    options.preserve_asts = True
+
+    formatter = util.FancyFormatter(stdout, stderr, options.hide_error_codes)
+
+    if options.install_types and (stdout is not sys.stdout or stderr is not sys.stderr):
+        Mypy.main.fail("error: --install-types not supported in this mode of running Mypy", stderr, options)
+    if options.non_interactive and not options.install_types:
+        Mypy.main.fail("error: --non-interactive is only supported with --install-types", stderr, options)
+    if options.install_types and not options.incremental:
+        Mypy.main.fail(
+            "error: --install-types not supported with incremental mode disabled", stderr, options)
+    if options.install_types and options.python_executable is None:
+        Mypy.main.fail(
+            "error: --install-types not supported without python executable or site packages", stderr, options)
+    if options.install_types and not sources:
+        Mypy.main.install_types(formatter, options, non_interactive=options.non_interactive)
+        return None
+
+    res, messages, blockers = Mypy.main.run_build(sources, options, fscache, t0, stdout, stderr)
+
+    code = 0
+    n_errors, n_notes, n_files = util.count_stats(messages)
+    if messages and n_notes < len(messages):
+        code = 2 if blockers else 1
+    if options.error_summary:
+        if n_errors:
+            summary = formatter.format_error(n_errors, n_files, len(sources), blockers=blockers, use_color=options.color_output)
+            stdout.write(summary + "\n")
+        elif not messages or n_notes == len(messages):
+            stdout.write(formatter.format_success(len(sources), options.color_output) + "\n")
+        stdout.flush()
+
+    if options.install_types and not options.non_interactive:
+        result = Mypy.main.install_types(formatter, options, after_run=True, non_interactive=False)
+        if result:
+            print()
+            print("note: Run Mypy again for up-to-date results with installed types")
+            code = 2
+
+    if code:
+        return None
+    else:
+        return res
+\end{lstlisting}
+\end{document}

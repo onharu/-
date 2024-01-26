@@ -1,0 +1,38 @@
+\documentclass{article}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\lstset{
+  language=Python,
+  basicstyle={\ttfamily},
+  identifierstyle={\small},
+  commentstyle={\small\itshape},
+  keywordstyle={\color{blue}},
+  ndkeywordstyle={\color{orange}},
+  stringstyle={\small\ttfamily\color{green}},
+  frame={tb},
+  breaklines=true,
+  columns=[l]{fullflexible},
+  numbers=left,
+  xrightmargin=0zw,
+  xleftmargin=0zw,
+  numberstyle={\scriptsize},
+  stepnumber=1,
+  numbersep=1zw,
+  lineskip=-0.5ex,
+  keywords={def, if, else, while, for, in, print}, % 通常のキーワード
+  morekeywords={ False, None}, % 追加のキーワード
+  morendkeywords={True}
+}
+
+\begin{document}
+
+\begin{lstlisting}
+def my_function(a:int):
+    if True:
+        print("This is True")
+    else:
+        print("This is not True")
+\end{lstlisting}
+
+\end{document}
