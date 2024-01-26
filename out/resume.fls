@@ -446,6 +446,8 @@ INPUT extractbb -B cropbox -O image/diffpy.png
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmss8.tfm
 INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmss8.tfm
 OUTPUT out/resume.dvi
+INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmtt8.tfm
+INPUT /usr/local/texlive/2021/texmf-dist/fonts/tfm/public/cm/cmtt8.tfm
 INPUT ./resume.bbl
 INPUT resume.bbl
 INPUT ./resume.bbl

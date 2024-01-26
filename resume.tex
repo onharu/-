@@ -27,9 +27,9 @@
   basicstyle={\ttfamily},
   identifierstyle={\small},
   commentstyle={\small\itshape},
-  keywordstyle={\small\bfseries\color{magenta}}, % キーワードの色を青に設定
+  keywordstyle={\small\bfseries\color{Green}}, % キーワードの色を青に設定
   ndkeywordstyle={\color{blue}},
-  stringstyle={\small\ttfamily\color{green}}, % 文字列の色を緑に設定
+  stringstyle={\small\ttfamily\color{orange}}, % 文字列の色を緑に設定
   frame={tb},
   breaklines=true,
   columns=[l]{fullflexible},
@@ -40,8 +40,8 @@
   stepnumber=1,
   numbersep=1zw,
   lineskip=-0.5ex,
-  keywords={def,for,if,elif,else,return}, 
-  ndkeywords={com},% 追加のキーワードを指定
+  keywords={At,Channel}, 
+  ndkeywords={com,select},% 追加のキーワードを指定
   moredelim=**[is][\color{red}]{pp}{pp} % 特定の要素を赤に設定
 }
 %\lstset{
@@ -220,37 +220,62 @@ PyChoralは図\ref{pychoralprocess}のように，一度型検査を行なった
   &~~~~~~~~~\textsf{PyChoral} ~~~~~~~~~~~\Rightarrow~~~~ \textsf{Python}\\
   &\projection{\textsf{class} ~\text{Foo} \text{(Ch2[{\cyan{A}},{\cyan{B}}])}}{A} ~\Rightarrow~ \textsf{class} ~\text{Foo\_{\cyan{A}}}(~)\\
   &\projection{\textsf{class} ~\text{Foo} \text{(Ch2[{\cyan{A}},{\cyan{B}}])}}{B} ~\Rightarrow~ \textsf{class} ~\text{Foo\_{\cyan{B}}}(~)\\
-  &\projection{\textsf{class} ~\text{Foo} \text{(Ch2[{\cyan{A}},{\cyan{B}}])}}{C} ~\Rightarrow~ 
+  %&\projection{\textsf{class} ~\text{Foo} \text{(Ch2[{\cyan{A}},{\cyan{B}}])}}{C} ~\Rightarrow~ 
 \end{alignat*}
+\vspace*{-20pt}
 \subsection{エンドポイント射影の実装}
 本研究では既存のPythonパーサーを活用する．Choralでは\mblue{@R}を各インターフェースに付属させることで参加者の情報を取得していたが，
-Mypyの検査器は\mblue{@}を認識できないため，その際に参照する標準ライブラリ\textsf{typeshed}内のファイルにAtクラス，Channelクラスを追加し，
-参加者の情報を取る．Importを含む文，ブロック，クラス定義，関数定義は射影後に独自のデータ構造で生成される．
-親クラス\textsf{Stmt}は抽象的な構文木であり，クラス継承を使ってASTの具体的なノードを子クラス(\textsf{Block,ClassDef,...})として定義している．
-新しく定義したデータクラスはMypyに備わっている標準のデータクラスから射影定義に従って必要なパラメータのみ抽出したものである．
-\begin{lstlisting}[caption=data.py,label=data]
-class Stmt:
+Mypyの検査器は\mblue{@}を認識できないため，その際に参照する標準ライブラリ\textsf{typeshed}内のファイルに\textbf{At}クラス，
+\textbf{Channel}クラスを追加し，参加者の情報を取る．
+\begin{lstlisting}
+class At(Generic[T1,R1],T1):
+  pass
+class Channel(Generic[T1,R1,R2]):
+  def com(self,msg:At[T1,R1]) -> At[T1,R2]:
     pass
-class Block(Stmt): # list[stm]
-    def __init__(self, body:list[Stmt]):
-        self.body = body
-... 
+  def select(self,msg:At[T1,R1]) -> At[T1,R2]:
+    pass
+class object:
+  ... 
+  def __matmul__(self:Self, _:R1) -> At[Self,R1]: ...
 \end{lstlisting}
-PyChoralプログラムの射影は\textsf{projection.py}に定義している．\textsf{projection}はStatementのリスト\textsf{n}，
+$\texttt{\_T1, \_R1, \_R2}$はジェネリック型であり，任意の型をとる．
+通信メソッド\textsf{com}，選択メソッド\textsf{select}は，Channelの第2引数から第3引数へ参加者の情報が追加された値を転送するメソッドとして定義する．
+
+PyChoralプログラムの射影はトップレベルの項から行われる．
+\textsf{projection}はStatementのリスト\textsf{n}，
 射影される参加者\textsf{r}，型検査器\textsf{tc}を引数にとり，新しいデータ構造を返す関数である．\textsf{n}の要素\textsf{node}
 に対して$\textsf{isinstance()}$で型を制限し，それぞれの射影関数に渡す．
-
 \begin{lstlisting}[caption=projection.py,label=data]
 def projection_all(n:list[Statement],r:str,tc:TypeChecker) -> list[Stmt]:
   result:list[Stmt] = [ ]
   for node in n:
-      if isinstance(node,Import):
-          result += [projection_md(node)]
-      elif isinstance(node,ClassDef):
+      if isinstance(node,ClassDef):
           result += [projection_class(node,r,tc)]
       ...
   return result
 \end{lstlisting}
+
+Importを含む文，ブロック，クラス定義，関数定義は射影後に独自のデータ構造で生成される．
+\begin{lstlisting}[caption=data.py,label=data]
+class Stmt:
+    pass
+class Asg(Stmt): #Assignment
+  def __init__(self, l:str, r:str, t:Type|None):
+      self.lvalues = l
+      self.rvalue = r
+      self.type = t
+... 
+def stmt_to_string(s:Stmt,indent:int) -> str:
+  if isinstance(s,Asg):
+    return " "*indent+s.lvalues+" = "+s.rvalue
+  ... 
+\end{lstlisting}
+親クラス\textsf{Stmt}は抽象的な構文木であり，クラス継承を使ってASTの具体的なノードを子クラス(\textsf{Asg,ClassDef,FuncDef,...})として定義している．
+新しく定義したデータクラスはMypyに備わっている標準のデータクラスから射影定義に従って必要なパラメータのみ抽出したものである．
+射影により生成されたデータクラスはマージや正規化で処理した後に，関数\texttt{stmt\_to\_string}によりPythonファイルに文字列として出力される．
+
+
 \subsection{アプリケーションによる評価}
 %以下はPyChoralでのMergeSortの実装プログラムである．
 %PyChoralを用いたアプリケーションとしてMergeSortを実装し，PyChoralの有用性を確認した。
