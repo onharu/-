@@ -1,17 +1,14 @@
 # Fdb version 3
-["bibtex thesis"] 1705376574 "thesis.aux" "thesis.bbl" "thesis" 1705826939
-  "jplain.bst" 0 -1 0 ""
-  "reference.bib" 1702725832 2287 2259f8a622a2bd7b92c30c3e91d6dea2 ""
-  "thesis.aux" 1704863704 7915 321dc9bc824feba01128dcce0c212efc ""
+["bibtex thesis"] 1706513310 "thesis.aux" "thesis.bbl" "thesis" 1706516968
   (generated)
   "thesis.bbl"
   "thesis.blg"
-["dvipdf"] 1705826938 "out/thesis.dvi" "out/thesis.pdf" "out/thesis" 1705826939
-  "out/thesis.dvi" 1705826938 121136 a6c7c0a940c6ec2c937d2a8fc190c7c5 "latex"
+["dvipdf"] 1706516967 "out/thesis.dvi" "out/thesis.pdf" "out/thesis" 1706516968
+  "out/thesis.dvi" 1706516967 120204 dad22915c8f7b93601db149e46962b22 "latex"
   (generated)
   "out/thesis.pdf"
-["latex"] 1705826937 "/Users/onda/修論/thesis.tex" "out/thesis.dvi" "thesis" 1705826939
-  "/Users/onda/修論/thesis.tex" 1705826937 54455 6be5843b92a0a500b981a86071f558d9 ""
+["latex"] 1706516966 "/Users/onda/修論/thesis.tex" "out/thesis.dvi" "thesis" 1706516968
+  "/Users/onda/修論/thesis.tex" 1706516965 57557 2e58833eae990acbe92e6e182c3a7f1f ""
   "/usr/local/texlive/2021/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1136768653 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/tfm/ptex-fonts/jis/jis.tfm" 1463434352 468 53f854284f6afa6c36aaa2d1090ecc12 ""
@@ -83,17 +80,17 @@
   "/usr/local/texlive/2021/texmf-dist/web2c/texmf.cnf" 1621028613 40042 fe981136cbb5f3715ab1b0e46e3d3892 ""
   "/usr/local/texlive/2021/texmf-var/web2c/eptex/platex.fmt" 1626447048 2756591 b5f98b6f6ecec28b627412e4fa021240 ""
   "/usr/local/texlive/2021/texmf.cnf" 1616695596 577 4c1911a7228e554c6032256d3cf5567d ""
-  "image/choreography.png" 1702309398 111810 ec759fb9d6b9fc68a412f7eb4dd62f97 ""
+  "image/cho.png" 1706432547 119342 ff1723753218cf7446142217e47c0615 ""
   "image/epp.png" 1705320964 53254 b139435a94cf79c13bf746192f153bf8 ""
   "image/mypyprocess.png" 1701844479 29961 51b380af59d1736fd007479118ea8d73 ""
-  "image/pychoralprocess.png" 1702306938 50463 806b571fa26f756a2b5a9d6f8f4834be ""
+  "image/pychoralprocess.png" 1706266824 54452 2aca21c68dfd556d1c3ba264db3f0b73 ""
   "image/syntax.png" 1705287961 134680 ddbf426c1d190135feec28cb6f6fa2bf ""
-  "out/thesis.aux" 1705826938 7735 2a0a3c9c13e11764f82b12c04680b7f9 "latex"
-  "out/thesis.toc" 1705826938 2027 28c8fef77dcdeff4a0f95974f86731ad "latex"
-  "thesis.bbl" 1705376574 1052 e8b69dd0a1a1a1769a8e197cf41da3ec "bibtex thesis"
+  "out/thesis.aux" 1706516967 7134 84ae297b4297f45df699f4f39c7fe1b0 "latex"
+  "out/thesis.toc" 1706516967 2065 5f494be03af53effc4cb5a55417e9216 "latex"
+  "thesis.bbl" 1706435640 801 6605cee63d5a0875eb5e8702670320b1 "bibtex thesis"
   "thesis.cls" 1702701551 3652 6ef4aead2f51a254ebf0f7b5374f2e23 ""
   (generated)
-  "out/thesis.toc"
-  "out/thesis.log"
-  "out/thesis.dvi"
   "out/thesis.aux"
+  "out/thesis.toc"
+  "out/thesis.dvi"
+  "out/thesis.log"

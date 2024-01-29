@@ -1,14 +1,17 @@
 # Fdb version 3
-["bibtex resume"] 1706258808 "resume.aux" "resume.bbl" "resume" 1706263241
+["bibtex resume"] 1706435337 "resume.aux" "resume.bbl" "resume" 1706435339
+  "jplain.bst" 0 -1 0 ""
+  "reference_resume.bib" 1706258293 1545 526d17528b22324e05f23423c62fae7a ""
+  "resume.aux" 1706272633 1867 de8c32005304408f28c267a22a8353b7 ""
   (generated)
-  "resume.bbl"
   "resume.blg"
-["dvipdf"] 1706263240 "out/resume.dvi" "out/resume.pdf" "out/resume" 1706263241
-  "out/resume.dvi" 1706263240 20280 db3a6fa0d88b3f6cc87cf298bde555e8 "latex"
+  "resume.bbl"
+["dvipdf"] 1706435338 "out/resume.dvi" "out/resume.pdf" "out/resume" 1706435339
+  "out/resume.dvi" 1706435338 22508 bf6e8e6bd6a4d6f0b1829a26c4784f45 "latex"
   (generated)
   "out/resume.pdf"
-["latex"] 1706263240 "/Users/onda/修論/resume.tex" "out/resume.dvi" "resume" 1706263241
-  "/Users/onda/修論/resume.tex" 1706263238 15028 544613e63b20e5df6a1a5f8cc357863d ""
+["latex"] 1706435337 "/Users/onda/修論/resume.tex" "out/resume.dvi" "resume" 1706435339
+  "/Users/onda/修論/resume.tex" 1706435336 16491 79fb88693067d98a60ea61d687371958 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/tfm/ptex-fonts/jis/jis.tfm" 1463434352 468 53f854284f6afa6c36aaa2d1090ecc12 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/tfm/ptex-fonts/jis/jisg.tfm" 1463434352 468 53f854284f6afa6c36aaa2d1090ecc12 ""
@@ -90,11 +93,11 @@
   "/usr/local/texlive/2021/texmf.cnf" 1616695596 577 4c1911a7228e554c6032256d3cf5567d ""
   "image/diffpy.png" 1706257771 38406 888dc177ad8149c12dd3ceb04b475918 ""
   "image/epp.png" 1705320964 53254 b139435a94cf79c13bf746192f153bf8 ""
-  "image/pychoralprocess.png" 1706186127 57098 e15f0a47074646fc89b2bd599da2426a ""
-  "out/resume.aux" 1706263240 1836 463307b1b792e4249ffefaf412b1dd5f "latex"
-  "resume.bbl" 1706258293 265 4e9d07692bd357429b0ac66a0fdf736c "bibtex resume"
+  "image/pychoralprocess.png" 1706266824 54452 2aca21c68dfd556d1c3ba264db3f0b73 ""
+  "out/resume.aux" 1706435338 1867 de8c32005304408f28c267a22a8353b7 "latex"
+  "resume.bbl" 1706435337 265 4e9d07692bd357429b0ac66a0fdf736c "bibtex resume"
   "resume.cls" 1704971693 7787 ab353b1c434e009b42f83c673b463c79 ""
   (generated)
-  "out/resume.dvi"
-  "out/resume.aux"
   "out/resume.log"
+  "out/resume.aux"
+  "out/resume.dvi"

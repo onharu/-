@@ -6,22 +6,21 @@
 \contentsline {section}{\numberline {2.2}Mypy}{4}{}%
 \contentsline {chapter}{\numberline {第3章}PyChoral}{5}{}%
 \contentsline {section}{\numberline {3.1}PyChoralの概要}{5}{}%
-\contentsline {section}{\numberline {3.2}PyChoralプログラムと生成されるPythonプログラムの例}{5}{}%
-\contentsline {section}{\numberline {3.3}PyChoralの仕様}{5}{}%
-\contentsline {subsection}{\numberline {3.3.1}syntax}{6}{}%
-\contentsline {subsection}{\numberline {3.3.2}Projection}{7}{}%
-\contentsline {section}{\numberline {3.4}Mypyを活用したエンドポイント射影の実装}{10}{}%
-\contentsline {subsection}{\numberline {3.4.1}Mypyの改造}{10}{}%
-\contentsline {subsection}{\numberline {3.4.2}射影後のデータ構造}{11}{}%
-\contentsline {subsection}{\numberline {3.4.3}projection\_all}{12}{}%
-\contentsline {subsection}{\numberline {3.4.4}projection\_exp}{13}{}%
-\contentsline {subsection}{\numberline {3.4.5}projection\_stm, projection\_block}{13}{}%
-\contentsline {subsection}{\numberline {3.4.6}projection\_class}{14}{}%
-\contentsline {subsection}{\numberline {3.4.7}projection\_func}{15}{}%
-\contentsline {subsection}{\numberline {3.4.8}projection\_md}{15}{}%
-\contentsline {subsection}{\numberline {3.4.9}help\_function}{15}{}%
-\contentsline {section}{\numberline {3.5}PyChoralプログラム}{16}{}%
-\contentsline {chapter}{\numberline {第4章}まとめ、今後の課題}{17}{}%
+\contentsline {section}{\numberline {3.2}PyChoralの構文と射影定義}{6}{}%
+\contentsline {subsection}{\numberline {3.2.1}syntax}{6}{}%
+\contentsline {subsection}{\numberline {3.2.2}Projection}{7}{}%
+\contentsline {section}{\numberline {3.3}Mypyを活用したエンドポイント射影の実装}{9}{}%
+\contentsline {subsection}{\numberline {3.3.1}Mypyの改造}{9}{}%
+\contentsline {subsection}{\numberline {3.3.2}射影後のデータ構造}{11}{}%
+\contentsline {subsection}{\numberline {3.3.3}projection\_all}{11}{}%
+\contentsline {subsection}{\numberline {3.3.4}projection\_exp}{12}{}%
+\contentsline {subsection}{\numberline {3.3.5}projection\_stm, projection\_block}{13}{}%
+\contentsline {subsection}{\numberline {3.3.6}projection\_class}{13}{}%
+\contentsline {subsection}{\numberline {3.3.7}projection\_func}{14}{}%
+\contentsline {subsection}{\numberline {3.3.8}projection\_md}{14}{}%
+\contentsline {subsection}{\numberline {3.3.9}help\_function}{15}{}%
+\contentsline {chapter}{\numberline {第4章}PyChoralを用いたアプリケーション}{16}{}%
+\contentsline {chapter}{\numberline {第5章}まとめ，今後の課題}{17}{}%
 \contentsline {chapter}{参考文献}{18}{}%
 \contentsline {chapter}{\numberline {付録A}Definition of Projection, Merging, Normalizer}{19}{}%
 \contentsline {section}{\numberline {A.1}Projection to Python}{19}{}%

@@ -4,18 +4,9 @@
 Choral.
 \newblock \url{https://www.choral-lang.org/}.
 
-\bibitem{ex_choral}
-Choral example. distributed-authentication.
-\newblock
-  \url{https://github.com/choral-lang/examples/tree/master/choral/distributed-authentication}.
-
 \bibitem{Mypy}
 mypy.
 \newblock \url{https://mypy.readthedocs.io/en/stable/}.
-
-\bibitem{python_gil}
-python.
-\newblock \url{https://peps.python.org/pep-0703/}.
 
 \bibitem{Choreographic}
 Lu{\'{\i}}s Cruz{-}Filipe, Fabrizio Montesi, and Marco Peressotti.

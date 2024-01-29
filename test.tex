@@ -1,38 +1,25 @@
 \documentclass{article}
+\usepackage{graphicx}
+%\usepackage[dvipdfmx]{graphicx}
+\usepackage[dvipdfmx]{color}
+\usepackage{float}
 \usepackage{listings}
-\usepackage{xcolor}
+\usepackage{jvlisting} %日本語のコメントアウトをする場合jvlisting（もしくはjlisting）が必要
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{stmaryrd} % \llparenthesis & rrparenthesis
+\usepackage[dvipsnames]{xcolor}
+\usepackage[hyphens]{url}
 
 \lstset{
-  language=Python,
-  basicstyle={\ttfamily},
-  identifierstyle={\small},
-  commentstyle={\small\itshape},
-  keywordstyle={\color{blue}},
-  ndkeywordstyle={\color{orange}},
-  stringstyle={\small\ttfamily\color{green}},
-  frame={tb},
-  breaklines=true,
-  columns=[l]{fullflexible},
-  numbers=left,
-  xrightmargin=0zw,
-  xleftmargin=0zw,
-  numberstyle={\scriptsize},
-  stepnumber=1,
-  numbersep=1zw,
-  lineskip=-0.5ex,
-  keywords={def, if, else, while, for, in, print}, % 通常のキーワード
-  morekeywords={ False, None}, % 追加のキーワード
-  morendkeywords={True}
+    moredelim=**[is][\color{Green}]{\#}{\#}
 }
 
 \begin{document}
 
 \begin{lstlisting}
-def my_function(a:int):
-    if True:
-        print("This is True")
-    else:
-        print("This is not True")
+#This is some highlighted text.
+print#("Hello, World!")
 \end{lstlisting}
 
 \end{document}

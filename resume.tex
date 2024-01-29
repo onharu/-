@@ -38,11 +38,12 @@
   xleftmargin=0zw,
   numberstyle={\scriptsize},
   stepnumber=1,
-  numbersep=1zw,
-  lineskip=-0.5ex,
+  numbersep=0.5zw,
+  lineskip=-0.8ex,
+  captionpos=b,
   keywords={At,Channel}, 
   ndkeywords={com,select},% 追加のキーワードを指定
-  moredelim=**[is][\color{red}]{pp}{pp} % 特定の要素を赤に設定
+  moredelim=**[is][\color{red}]{\#}{\#} % 特定の要素を赤に設定
 }
 %\lstset{
 %  basicstyle={\ttfamily},
@@ -89,19 +90,16 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{はじめに}
 
-一般的に並列処理を用いたプログラムは，動作の並行性に起因するデッドロックなどのエラーや非決定性問題の発見と修正が困難であるため構築が難しい．
-コレオグラフィックプログラミング言語は，デッドロック等の並行性起因エラーが起こらないことが保証されているプログラミング言語である．
-本研究では，先行研究であるJavaを拡張したコレオグラフィックプログラミング言語Choral\cite{choral}の理論から，機械学習やIoTの業界で盛んに使用されている
-Pythonベースのコレオグラフィックプログラミング言語であるPyChoralの実装を，Pythonの静的型検査器であるMypyを活用して行い，有用性を示す．
+機械学習やIoTの業界で盛んに使用されているPythonはGILがオプション化されるため，並列処理プログラミングの需要が高まると考える．
+しかし，一般的に並列処理を用いたプログラムは，動作の並行性に起因するデッドロックなどのエラーや非決定性問題の発見と修正が困難であるため構築が難しい．
+この問題の解決手法の一つとして，コレオグラフィがある．
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{コレオグラフィとエンドポイント射影}
-
-コレオグラフィとは，並行に動作する複数の参加者の連携手順をまとめたプログラムである．
-これに従って各エンドポイント(通信の参加者)のプログラムが生成され，それらはデッドロック等の並行性起因のエラーがないことを保証する．
-%ChoralはJavaをベースとしたコレオグラフィックプログラミング言語の一種である．
-コレオグラフィに従った各エンドポイントのプログラムはエンドポイント射影\cite{endpoint}という動作により，自動的に抽出される．
-エンドポイント射影とは，コレオグラフィから各参加者の型情報を導出する操作である．
+コレオグラフィとは，並行に動作する複数の参加者の連携手順をまとめたプログラムであり，
+コレオグラフィックプログラミング言語によって記述する．コレオグラフィに従って各エンドポイント(通信の参加者)のプログラムが生成され，
+それらはデッドロック等の並行性起因のエラーがないことを保証する．コレオグラフィに従った各エンドポイントのプログラムはエンドポイント射影
+\cite{endpoint}により，自動的に抽出される．エンドポイント射影とは，コレオグラフィから各参加者の型情報を導出する操作である．
+先行研究であるChoral\cite{choral}は，Javaを拡張したコレオグラフィックプログラミング言語の一つであり，
+エンドポイント射影によって並行性起因のエラーなく実行可能である各エンドポイントのJavaプログラムが生成される．
 \vspace*{-7pt}
 \begin{figure}[H]
   \centering
@@ -109,6 +107,25 @@ Pythonベースのコレオグラフィックプログラミング言語であ�
   \caption{エンドポイント射影(参加者3人)}
 \end{figure}
 \vspace*{-15pt}
+
+本研究では，Pythonをベースとしたコレオグラフィックプログラミング言語の実装を，Pythonの静的型検査器であるMypyを活用して行い，有用性を示す．
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section{コレオグラフィとエンドポイント射影}
+%
+%コレオグラフィとは，並行に動作する複数の参加者の連携手順をまとめたプログラムである．
+%これに従って各エンドポイント(通信の参加者)のプログラムが生成され，それらはデッドロック等の並行性起因のエラーがないことを保証する．
+%%ChoralはJavaをベースとしたコレオグラフィックプログラミング言語の一種である．
+%コレオグラフィに従った各エンドポイントのプログラムはエンドポイント射影\cite{endpoint}という動作により，自動的に抽出される．
+%エンドポイント射影とは，コレオグラフィから各参加者の型情報を導出する操作である．
+%\vspace*{-7pt}
+%\begin{figure}[H]
+%  \centering
+%  \includegraphics[scale=0.3]{image/epp.png}
+%  \caption{エンドポイント射影(参加者3人)}
+%\end{figure}
+%\vspace*{-15pt}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\section{Mypy}
 %%Pythonは動的型付け言語で実行時にのみエラーが表示される．
@@ -129,60 +146,53 @@ Pythonベースのコレオグラフィックプログラミング言語であ�
 \section{PyChoral}
 
 PyChoralはPythonベースのコレオグラフィックプログラミング言語である．
-Pythonは動的型付け言語であるため，Pythonの静的型検査器であるMypyを使用してコンパイル時に型検査を行う．
+Pythonは動的型付け言語であるため，Mypyを使用して静的に型検査する．
 PyChoralでコレオグラフィを記述し，コンパイル時に各参加者のPythonプログラムがコレオグラフィに従った形で自動導出する．
-code\ref{ch}はPyChoralプログラムの例である．
-\vspace{-10pt}
+
+code\ref{ch}はPyChoralで記述したコレオグラフィの例である．
+クラス\textsf{Check}の引数である\textsf{Ch2[S,C]}は，参加者S,Cがこのクラスに関連することを表す．
+\textsf{Channel}は転送される値，送信者，受信者の型をもつ型クラスである．
+\textsf{At}は転送される値，関連する参加者の型をもつ型クラスである．
+\textsf{e@R()}は参加者Rの値eであることを示す．
+\textsf{com}は送信者の値を受信者に転送するメソッドである.%($\texttt{At[\_,R1]} \rightarrow \texttt{At[\_,R2]}$)．
+
 \begin{lstlisting}[caption=Staff(S)とCustomer(C)でのお会計時のやり取り,label=ch]
 class Check(Ch2[S,C]):
   def __init__(self):
-    self.ch_CS:Channel[int,C,S] = Channel[int,C,S]('C','S')
-    self.ch_SC:Channel[str,S,C] = Channel[str,S,C]('S','C')
+    self.chCS:Channel[int,C,S]=Channel[int,C,S]()
+    self.chSC:Channel[str,S,C]=Channel[str,S,C]()
   def check(self,price:At[int,S],money:At[int,C]) -> At[str,C]:
-    payment = self.ch_CS.com(money)
+    payment = self.chCS.com(money)
     if (payment > price):
-      return self.ch_SC.com("thanks"@S())
+      return self.chSC.com("thanks"@S())
     else:
-      return self.ch_SC.com("not enough"@S())
+      return self.chSC.com("not enough"@S())
 \end{lstlisting}
-クラス\textsf{Check}の引数である\textsf{Ch2[S,C]}は，参加者S,Cがこのクラスに関連することを表す．
-\textsf{Channel}は第1引数に通信する値の型，第2,3引数にそれぞれ送信者、受信者の型をもつ型クラスである．
-\textsf{At}は第1引数に値の型，第2引数にその値に関連する参加者の型をもつ型クラスである．
-\textsf{e@R()}は参加者Rの値eであることを示す．
-\textsf{com}は送信者の値を受信者に転送するメソッドである.%($\texttt{At[\_,R1]} \rightarrow \texttt{At[\_,R2]}$)．
-%このPyChoralで記述したコレオグラフィより各参加者(S,C)のPythonプログラムを自動導出する．
-%\begin{lstlisting}[caption=生成されたPythonプログラム]
-%# Customer
-%class Check_C():
-%  def __init__(self):
-%    self.ch_CS = Channel[int,C,S]()
-%    self.ch_SC = Channel[str,S,C]()
-%  def check(self):
-%    Unit.id(self.ch_CS.com(1000))
-%    return self.ch_SC.com()
-%# Staff
-%class Check_S():
-%  def __init__(self):
-%    self.ch_CS = Channel[int,C,S]()
-%    self.ch_SC = Channel[str,S,C]()
-%  def check(self,price):
-%    payment = self.ch_CS.com()
-%    if payment>price:
-%      return Unit.id(self.ch_SC.com("thanks"))
-%    else:
-%      return Unit.id(self.ch_SC.com("not enough"))
-%\end{lstlisting}
+\vspace*{-10pt}
+このPyChoralで記述したコレオグラフィより各参加者(S,C)のPythonプログラムを自動導出する．
+\begin{lstlisting}[caption=生成されたPythonプログラム(Customer)]
+class Check_C():
+  def __init__(self):
+    self.ch_CS = Channel[int,C,S]()
+    self.ch_SC = Channel[str,S,C]()
+  def check(self,money):
+    Unit.id(self.ch_CS.com(money))
+    return self.ch_SC.com()
+\end{lstlisting}
+\vspace*{-10pt}
+生成されたPythonプログラムは型注釈がない．PyChoralプログラムの型注釈において射影対象でない参加者が関連する値は消える．
+射影の実装の詳細は修士論文に掲載する．
 
 PyChoralは図\ref{pychoralprocess}のように，一度型検査を行なった後に各エンドポイントのASTを再構築し，各エンドポイントのPythonプログラムを生成する.
 \vspace{-7pt}
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.23]{image/pychoralprocess.png}
+  \includegraphics[scale=0.225]{image/pychoralprocess.png}
   \caption{PyChoralプロセス}
   \label{pychoralprocess}
 \end{figure}
 \vspace{-17pt}
-\subsection{PyChoralの仕様}
+\subsection{PyChoralの構文・Pythonへの射影の定義}
 図\ref{syntax}はPyChoralの構文のうち，既存のPythonとの差分がある部分である．
 クラス定義は，参加者の明示をするためにChクラスを追加し，これを第一引数にとるものとする．
 関数定義は，引数(self以外)に型注釈をつけることで関連する参加者を示す．式はリテラルのみ$\mblue{@}$をつけて参加者の情報を得る．
@@ -225,7 +235,7 @@ PyChoralは図\ref{pychoralprocess}のように，一度型検査を行なった
 \vspace*{-20pt}
 \subsection{エンドポイント射影の実装}
 本研究では既存のPythonパーサーを活用する．Choralでは\mblue{@R}を各インターフェースに付属させることで参加者の情報を取得していたが，
-Mypyの検査器は\mblue{@}を認識できないため，その際に参照する標準ライブラリ\textsf{typeshed}内のファイルに\textbf{At}クラス，
+Mypyの検査器は\mblue{@}を認識できないため，その際に参照する標準ライブラリ\textsf{typeshed}内に\textbf{At}クラス，
 \textbf{Channel}クラスを追加し，参加者の情報を取る．
 \begin{lstlisting}
 class At(Generic[T1,R1],T1):
@@ -239,13 +249,14 @@ class object:
   ... 
   def __matmul__(self:Self, _:R1) -> At[Self,R1]: ...
 \end{lstlisting}
-$\texttt{\_T1, \_R1, \_R2}$はジェネリック型であり，任意の型をとる．
+$\texttt{T1,R1,R2}$はジェネリック型であり，任意の型をとる．
 通信メソッド\textsf{com}，選択メソッド\textsf{select}は，Channelの第2引数から第3引数へ参加者の情報が追加された値を転送するメソッドとして定義する．
+また，objectクラスに\mblue{@}のためのメソッド\texttt{\_\_matmul\_\_}を追加する．これにより，Mypyの型検査で\mblue{@}が型エラーにならない．
 
-PyChoralプログラムの射影はトップレベルの項から行われる．
-\textsf{projection}はStatementのリスト\textsf{n}，
-射影される参加者\textsf{r}，型検査器\textsf{tc}を引数にとり，新しいデータ構造を返す関数である．\textsf{n}の要素\textsf{node}
-に対して$\textsf{isinstance()}$で型を制限し，それぞれの射影関数に渡す．
+PyChoralプログラムの射影はトップレベルの項から行われる．\textsf{projection}は文のリスト\textsf{n}，
+射影対象の参加者\textsf{r}，型チェッカー\textsf{tc}を引数にとり，新しいデータ構造を返す関数である．
+各文，各式はPythonの標準関数\texttt{isinstance()}で型を制限し，再帰的に射影を行う．
+$\textsf{isinstance()}$はオブジェクトが指定されたクラスまたは型に属しているかどうかを判定する関数である．
 \begin{lstlisting}[caption=projection.py,label=data]
 def projection_all(n:list[Statement],r:str,tc:TypeChecker) -> list[Stmt]:
   result:list[Stmt] = [ ]
@@ -257,6 +268,9 @@ def projection_all(n:list[Statement],r:str,tc:TypeChecker) -> list[Stmt]:
 \end{lstlisting}
 
 Importを含む文，ブロック，クラス定義，関数定義は射影後に独自のデータ構造で生成される．
+親クラス\textsf{Stmt}は抽象的な構文木であり，クラス継承によりASTの具体的なノードを子クラス(\textsf{Asg,ClassDef,FuncDef,...})として定義する．
+新しく定義したデータクラスはMypyに備わっている標準のデータクラスから射影定義に従って必要なパラメータのみ抽出したものである．
+射影により生成されたデータクラスはマージや正規化で処理した後に，関数\texttt{stmt\_to\_string}によりPythonファイルに文字列として出力される．
 \begin{lstlisting}[caption=data.py,label=data]
 class Stmt:
     pass
@@ -271,20 +285,19 @@ def stmt_to_string(s:Stmt,indent:int) -> str:
     return " "*indent+s.lvalues+" = "+s.rvalue
   ... 
 \end{lstlisting}
-親クラス\textsf{Stmt}は抽象的な構文木であり，クラス継承を使ってASTの具体的なノードを子クラス(\textsf{Asg,ClassDef,FuncDef,...})として定義している．
-新しく定義したデータクラスはMypyに備わっている標準のデータクラスから射影定義に従って必要なパラメータのみ抽出したものである．
-射影により生成されたデータクラスはマージや正規化で処理した後に，関数\texttt{stmt\_to\_string}によりPythonファイルに文字列として出力される．
-
 
 \subsection{アプリケーションによる評価}
 %以下はPyChoralでのMergeSortの実装プログラムである．
 %PyChoralを用いたアプリケーションとしてMergeSortを実装し，PyChoralの有用性を確認した。
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{結論}
+\section{まとめ}
 本研究はPythonを拡張したコレオグラフィックプログラミング言語PyChoralを実装した．PyChoralプログラムは射影の定義によって各参加者のPythonプログラムが生成される．
 これらはコレオグラフィに従っているため，デッドロック等の並行性起因エラーが生じないことが保証されている．これにより，マルチスレッド環境におけるプログラムが
-単一の言語で記述されるプログラムによって実装可能となり，Pythonプログラマの手助けとなる．3者間までの通信しか対応していないため，それ以上の参加者に対応可能にすることが今後の課題である．
+単一の言語で記述されるプログラムによって実装可能となり，Pythonプログラマの手助けとなる．
+PyChoralは，現段階で3者間までの通信しか対応していないため，それ以上の参加者に対応可能にすることが今後の課題である．
+%今後の課題としては，3者間までの通信しか対応していないため，それ以上の参加者に対応可能にする点と，他の手法とのパフォーマンスの比較をする点が挙げられる．
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %参考文献
 \bibliography{reference_resume.bib}

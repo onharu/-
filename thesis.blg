@@ -1,52 +1,50 @@
-This is pBibTeX, Version 0.99d-j0.33 (TeX Live 2021)
+This is pBibTeX, Version 0.99d-j0.33 (utf8.euc) (TeX Live 2021)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: thesis.aux
 The style file: jplain.bst
 Database file #1: reference.bib
-Warning--to sort, need author or key in python_gil
 Warning--to sort, need author or key in choral
-Warning--to sort, need author or key in ex_choral
 Warning--to sort, need author or key in Mypy
-You've used 7 entries,
+You've used 5 entries,
             2620 wiz_defined-function locations,
-            626 strings with 5292 characters,
-and the built_in function-call counts, 2118 in all, are:
-= -- 170
-> -- 50
+            620 strings with 5095 characters,
+and the built_in function-call counts, 1722 in all, are:
+= -- 142
+> -- 48
 < -- 7
-+ -- 24
++ -- 22
 - -- 16
-* -- 103
-:= -- 253
-add.period$ -- 17
-call.type$ -- 7
-change.case$ -- 29
+* -- 93
+:= -- 219
+add.period$ -- 13
+call.type$ -- 5
+change.case$ -- 23
 chr.to.int$ -- 0
-cite$ -- 11
-duplicate$ -- 123
-empty$ -- 217
+cite$ -- 7
+duplicate$ -- 97
+empty$ -- 159
 format.name$ -- 24
-if$ -- 501
+if$ -- 401
 int.to.chr$ -- 0
-int.to.str$ -- 7
+int.to.str$ -- 5
 missing$ -- 3
-newline$ -- 34
+newline$ -- 26
 num.names$ -- 6
-pop$ -- 85
+pop$ -- 53
 preamble$ -- 1
-purify$ -- 22
+purify$ -- 18
 quote$ -- 0
-skip$ -- 116
+skip$ -- 92
 stack$ -- 0
-substring$ -- 83
-swap$ -- 28
+substring$ -- 73
+swap$ -- 26
 text.length$ -- 7
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 28
-warning$ -- 4
+type$ -- 20
+warning$ -- 2
 while$ -- 10
-width$ -- 8
-write$ -- 63
-is.kanji.str$ -- 61
-(There were 4 warnings)
+width$ -- 6
+write$ -- 49
+is.kanji.str$ -- 49
+(There were 2 warnings)

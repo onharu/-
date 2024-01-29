@@ -1,0 +1,49 @@
+This is pBibTeX, Version 0.99d-j0.33 (TeX Live 2021)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: resume.aux
+The style file: jplain.bst
+Database file #1: reference_resume.bib
+Warning--to sort, need author or key in choral
+You've used 2 entries,
+            2620 wiz_defined-function locations,
+            600 strings with 4693 characters,
+and the built_in function-call counts, 510 in all, are:
+= -- 38
+> -- 13
+< -- 0
++ -- 6
+- -- 4
+* -- 19
+:= -- 72
+add.period$ -- 5
+call.type$ -- 2
+change.case$ -- 8
+chr.to.int$ -- 0
+cite$ -- 3
+duplicate$ -- 29
+empty$ -- 54
+format.name$ -- 6
+if$ -- 115
+int.to.chr$ -- 0
+int.to.str$ -- 2
+missing$ -- 1
+newline$ -- 12
+num.names$ -- 2
+pop$ -- 23
+preamble$ -- 1
+purify$ -- 6
+quote$ -- 0
+skip$ -- 28
+stack$ -- 0
+substring$ -- 10
+swap$ -- 2
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 8
+warning$ -- 1
+while$ -- 2
+width$ -- 3
+write$ -- 19
+is.kanji.str$ -- 16
+(There was 1 warning)
