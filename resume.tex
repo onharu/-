@@ -28,7 +28,7 @@
   identifierstyle={\small},
   commentstyle={\small\itshape},
   keywordstyle={\small\bfseries\color{Green}}, % キーワードの色を青に設定
-  ndkeywordstyle={\color{blue}},
+  ndkeywordstyle={\color{orange}},
   stringstyle={\small\ttfamily\color{orange}}, % 文字列の色を緑に設定
   frame={tb},
   breaklines=true,
@@ -39,32 +39,14 @@
   numberstyle={\scriptsize},
   stepnumber=1,
   numbersep=0.5zw,
-  lineskip=-0.8ex,
+  lineskip=-1.0ex,
   captionpos=b,
-  keywords={At,Channel}, 
+  keywords={At}, 
   ndkeywords={com,select},% 追加のキーワードを指定
-  moredelim=**[is][\color{red}]{\#}{\#} % 特定の要素を赤に設定
+  moredelim=**[is][\color{gray}]{!}{!}, % 特定の要素を赤に設定
+  moredelim=**[is][\color{red}]{|}{|},
+  moredelim=**[is][\color{blue}]{`}{`},
 }
-%\lstset{
-%  basicstyle={\ttfamily},
-%  identifierstyle={\small},
-%  commentstyle={\smallitshape},
-%  keywordstyle={\small\bfseries},
-%  ndkeywordstyle={\small},
-%  stringstyle={\small\ttfamily},
-%  frame={tb},
-%  breaklines=true,
-%  columns=[l]{fullflexible},
-%  numbers=left,
-%  xrightmargin=0zw,
-%  xleftmargin=0zw,
-%  numberstyle={\scriptsize},
-%  stepnumber=1,
-%  numbersep=0.5zw,
-%  lineskip=-0.8ex
-%}
-
-\renewcommand{\lstlistingname}{Code}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% ヘッダ設定
 \所属{岐阜大学大学院 自然科学技術研究科 知能理工学専攻}
@@ -74,7 +56,7 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% ユーザ定義
-\renewcommand{\lstlistingname}{code}
+\renewcommand{\lstlistingname}{Code}
 \newcommand{\projection}[2]{{\color{cyan}\llparenthesis}#1{\color{cyan}\rrparenthesis^#2}}
 \newcommand{\mblue}[1]{\textbf{\textsf{\color{MidnightBlue}#1}}}
 \newcommand{\cyan}[1]{\color{cyan}#1}
@@ -90,213 +72,235 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{はじめに}
 
-機械学習やIoTの業界で盛んに使用されているPythonはGILがオプション化されるため，並列処理プログラミングの需要が高まると考える．
-しかし，一般的に並列処理を用いたプログラムは，動作の並行性に起因するデッドロックなどのエラーや非決定性問題の発見と修正が困難であるため構築が難しい．
-この問題の解決手法の一つとして，コレオグラフィがある．
+%機械学習やIoTの分野で盛んに使用されているPythonは並行，並列，および分散プログラミングの需要がある．しかし，
+一般的に，並行・分散プログラムは，デッドロック等の並行性に起因するエラーや非決定性問題の
+発見と修正が困難であるため構築が難しい．この問題の解決手法の一つとして，コレオグラフィが提唱されている．
+コレオグラフィは並行に動作する複数参加者の連携手順をまとめたプログラムであり，コレオグラフィックプログラミング言語によって記述される．
+コレオグラフィに準ずる各参加者のプログラムは，\textbf{エンドポイント射影}と呼ばれる操作によって自動的に生成される．
+%コレオグラフィに従った各参加者のプログラムは，エンドポイント射影によって自動的に生成されるメカニズムが備わっている．
+%エンドポイント射影とは，コレオグラフィから各参加者のプログラムを導出する操作である．
+生成された各参加者のプログラムはデッドロック等の並行性に起因するエラーがないことが理論的に保証されている．
+先行研究であるChoral \cite{choral}は，Javaを拡張したコレオグラフィックプログラミング言語の一つである．
+しかし，機械学習やIoTの分野で盛んに使用されているPythonを拡張したコレオグラフィックプログラミング言語は
+著者が知る限りはまだ提案されていない．
 
-コレオグラフィとは，並行に動作する複数の参加者の連携手順をまとめたプログラムであり，
-コレオグラフィックプログラミング言語によって記述する．コレオグラフィに従って各エンドポイント(通信の参加者)のプログラムが生成され，
-それらはデッドロック等の並行性起因のエラーがないことを保証する．コレオグラフィに従った各エンドポイントのプログラムはエンドポイント射影
-\cite{endpoint}により，自動的に抽出される．エンドポイント射影とは，コレオグラフィから各参加者の型情報を導出する操作である．
-先行研究であるChoral\cite{choral}は，Javaを拡張したコレオグラフィックプログラミング言語の一つであり，
-エンドポイント射影によって並行性起因のエラーなく実行可能である各エンドポイントのJavaプログラムが生成される．
-\vspace*{-7pt}
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale=0.3]{image/epp.png}
-  \caption{エンドポイント射影(参加者3人)}
-\end{figure}
-\vspace*{-15pt}
-
-本研究では，Pythonをベースとしたコレオグラフィックプログラミング言語の実装を，Pythonの静的型検査器であるMypyを活用して行い，有用性を示す．
+本研究では，Pythonをベースとしたコレオグラフィックプログラミング言語\textbf{PyChoral}を構築し，有用性を確かめる．
+これにより，機械学習やIoTを扱うプロジェクトにおいて、Pythonで並行・分散プログラムが実装可能となることを目指す足がかりとする．
+本研究の特徴はPythonの型検査器である\textbf{Mypy}の型検査結果を活用することである．
+PyChoralの構文はPythonと同一であることから，PythonのIDEやライブラリを使うことができる．
+よって，Pythonの標準的な仕組みを保ったまま，単一のプログラムで並行・分散プログラムを記述できるという点で可用性をもつ．
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\section{コレオグラフィとエンドポイント射影}
-%
-%コレオグラフィとは，並行に動作する複数の参加者の連携手順をまとめたプログラムである．
-%これに従って各エンドポイント(通信の参加者)のプログラムが生成され，それらはデッドロック等の並行性起因のエラーがないことを保証する．
-%%ChoralはJavaをベースとしたコレオグラフィックプログラミング言語の一種である．
-%コレオグラフィに従った各エンドポイントのプログラムはエンドポイント射影\cite{endpoint}という動作により，自動的に抽出される．
-%エンドポイント射影とは，コレオグラフィから各参加者の型情報を導出する操作である．
-%\vspace*{-7pt}
-%\begin{figure}[H]
-%  \centering
-%  \includegraphics[scale=0.3]{image/epp.png}
-%  \caption{エンドポイント射影(参加者3人)}
-%\end{figure}
-%\vspace*{-15pt}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\section{Mypy}
-%%Pythonは動的型付け言語で実行時にのみエラーが表示される．
-%MypyはPythonの静的型検査器である．
-%%Pythonは動的型付け言語で実行時にのみエラーが表示されるが，Mypyによる型注釈を活用することで
-%%コンパイル時にバグの検出が可能になり，安全なコーディングが可能となる．
-%%これによりコンパイル時にバグの検出が可能になり，安全なコーディングが可能となる．
-%本研究ではMypyを別のPythonアプリケーションに統合するために，PythonプログラムにMypy.apiをインポートして型検査を行う．
-%図\ref{mypyproc}は通常のMypyを使用した際の型検査のプロセスである．
-%\begin{figure}[H]
-%  \centering
-%  \includegraphics[scale=0.36]{image/mypyprocess.png}
-%  \caption{Mypyプロセス}
-%  \label{mypyproc}
-%\end{figure}
-%\vspace*{-20pt}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{PyChoral}
+\section{PyChoralによるプログラミング}
 
-PyChoralはPythonベースのコレオグラフィックプログラミング言語である．
-Pythonは動的型付け言語であるため，Mypyを使用して静的に型検査する．
-PyChoralでコレオグラフィを記述し，コンパイル時に各参加者のPythonプログラムがコレオグラフィに従った形で自動導出する．
+PyChoralはPythonの構文や型システムを踏襲して構築されている．PyChoralを使ったコレオグラフィはクラスを用いて構築する．
+参加者間では，コレオグラフィの中で生成するチャネルを用いて通信する．
+Code \ref{ch}は，入力した整数が2で割り切れる回数をカウントするコレオグラフィ\textsf{Div2}である．
+\texttt{A}と\texttt{B}は\textsf{div2}メソッドを呼ぶ．
+\texttt{A}に引数で渡される整数値\texttt{n}が2で割り切れる限り，\texttt{n}を2で割って，割った回数をカウントする．
+もし割り切れない場合は，それまでにカウントした回数を\texttt{A}から\texttt{B}へ送る．例えば，ユーザーコード側で\texttt{A}のメソッド\textsf{div2}に$(8,0)$を渡すと\texttt{B}は3を受け取る．
+%\texttt{A}に引数で渡される整数値\texttt{n}が2で割り切れれば，
+%メソッド\textsf{div2}に\texttt{n}を2で割った値と，割る毎に1カウントアップする値\texttt{c}を引数として再帰呼び出しする．
+%割り切れなくなったらそれまでにカウントした回数を戻り値として返す．例えば，ユーザーコード側で\texttt{A}のメソッド\textsf{div2}に$(8,0)$を渡すと3が返ってくる．
+2,3行目はクラスのコンストラクタを表す．ここでは\texttt{A}から\texttt{B}へobject型の値を送るチャネル\texttt{chAB}を生成している．
 
-code\ref{ch}はPyChoralで記述したコレオグラフィの例である．
-クラス\textsf{Check}の引数である\textsf{Ch2[S,C]}は，参加者S,Cがこのクラスに関連することを表す．
-\textsf{Channel}は転送される値，送信者，受信者の型をもつ型クラスである．
-\textsf{At}は転送される値，関連する参加者の型をもつ型クラスである．
-\textsf{e@R()}は参加者Rの値eであることを示す．
-\textsf{com}は送信者の値を受信者に転送するメソッドである.%($\texttt{At[\_,R1]} \rightarrow \texttt{At[\_,R2]}$)．
-
-\begin{lstlisting}[caption=Staff(S)とCustomer(C)でのお会計時のやり取り,label=ch]
-class Check(Ch2[S,C]):
-  def __init__(self):
-    self.chCS:Channel[int,C,S]=Channel[int,C,S]()
-    self.chSC:Channel[str,S,C]=Channel[str,S,C]()
-  def check(self,price:At[int,S],money:At[int,C]) -> At[str,C]:
-    payment = self.chCS.com(money)
-    if (payment > price):
-      return self.chSC.com("thanks"@S())
+4-10行目は\texttt{A}と\texttt{B}が連携して動作するメソッド\texttt{div2}である．
+5行目のif文で，\texttt{A}がもつ整数\texttt{n}が2で割り切れるかどうかで分岐する．この分岐の結果はまだ\texttt{B}には知らされない．
+6,7行目は割り切れる場合，9,10行目は割り切れない場合である．
+6,9行目にある\texttt{select}は条件分岐の結果を示す列挙型の値を送るメソッドである．
+\texttt{com}は送信者の情報を含む任意の型をもつ値を送るメソッドである．
+\begin{lstlisting}[caption=PyChoralによるコレオグラフィ,label=ch]
+class Div2(Choreograhy2[A,B]):
+  def __init__(self) -> None:
+    self.chAB = Channel[object,A,B]()
+  def div2(self,n:At[int,A],c:At[int,A]) -> At[int,B]:
+    if (n % 2)@A() == 0@A():
+      self.chAB.select(|OddEven.EVEN|@A())
+      return self.div2((n//2)@A(),(c+1)@A())
     else:
-      return self.chSC.com("not enough"@S())
+      self.chAB.select(`OddEven.ODD`@A())
+      return self.chAB.com(c@A())
 \end{lstlisting}
-\vspace*{-10pt}
-このPyChoralで記述したコレオグラフィより各参加者(S,C)のPythonプログラムを自動導出する．
-\begin{lstlisting}[caption=生成されたPythonプログラム(Customer)]
-class Check_C():
+\vspace*{-7pt}
+
+クラス\texttt{Div2(Choreograhy2[A,B])}からエンドポイント射影により，クラス\texttt{Div2\_A},\texttt{Div2\_B}が生成される．
+参加者\texttt{A,B}はプロセスから\texttt{Div2\_A},\texttt{Div2\_B}のメソッド\texttt{div2}を呼び出すことにより連携して動作する．
+Code \ref{python}は，Code \ref{ch}から射影された\texttt{B}のPythonプログラムである．型注釈や\texttt{B}が関連しない式や文は除去される．
+\begin{lstlisting}[caption=参加者\texttt{B}のPythonプログラム,label=python]
+class Div2_B():
   def __init__(self):
-    self.ch_CS = Channel[int,C,S]()
-    self.ch_SC = Channel[str,S,C]()
-  def check(self,money):
-    Unit.id(self.ch_CS.com(money))
-    return self.ch_SC.com()
+    self.chAB = Channel[object,A,B]()
+  def div2(self):
+    match self.chAB.select():
+      case |OddEven.EVEN|:
+        return self.div2()
+      case `OddEven.ODD`:
+        return self.chAB.com()
+      case _:
 \end{lstlisting}
-\vspace*{-10pt}
-生成されたPythonプログラムは型注釈がない．PyChoralプログラムの型注釈において射影対象でない参加者が関連する値は消える．
-射影の実装の詳細は修士論文に掲載する．
+\vspace*{-7pt}
 
-PyChoralは図\ref{pychoralprocess}のように，一度型検査を行なった後に各エンドポイントのASTを再構築し，各エンドポイントのPythonプログラムを生成する.
-\vspace{-7pt}
-\begin{figure}[H]
-  \centering
-  \includegraphics[scale=0.225]{image/pychoralprocess.png}
-  \caption{PyChoralプロセス}
-  \label{pychoralprocess}
-\end{figure}
-\vspace{-17pt}
-\subsection{PyChoralの構文・Pythonへの射影の定義}
-図\ref{syntax}はPyChoralの構文のうち，既存のPythonとの差分がある部分である．
-クラス定義は，参加者の明示をするためにChクラスを追加し，これを第一引数にとるものとする．
-関数定義は，引数(self以外)に型注釈をつけることで関連する参加者を示す．式はリテラルのみ$\mblue{@}$をつけて参加者の情報を得る．
-その他の式や文は型注釈もしくはMypyによる型検査の際に取得できる型情報から参加者の情報を得る．
-\vspace{-8pt}
-\begin{figure}[H]
-  \includegraphics[scale=0.67]{image/diffpy.png}
-  \caption{PyChoralの構文(一部)}
-  \label{syntax}
-\end{figure}
-\vspace{-20pt}
-とあるコレオグラフィの参加者$\cyan{\text{A}}$に対するPyChoralの項の射影は$\projection{Term}{A}$と記し，これは$Term$における参加者$\cyan{\text{A}}$の振舞いを表すPythonの項となる．
-例えば，クラス定義の射影はクラス継承の第一引数Chクラスに存在する参加者名によってPythonの項を生成する．
-\begin{alignat*}{2} 
-  &\projection{\textsf{class} ~id~(Ch[\overline{\cyan{R}}],\overline{Exp}):\overline{Stm}}{A}=\\
-  &
-  ~~~~~~~~~~~~~~\begin{cases}
-    \textsf{class} ~id\_{\cyan{A}}~(\overline{\projection{Exp}{A}}):\overline{\projection{Stm}{A}} & \text{if}~~ {\cyan{A}} \in \overline{\cyan{R}}\\
-    \text{absent} & \text{if}~~ {\cyan{A}} \notin \overline{\cyan{R}}\\
-  \end{cases}
-\end{alignat*}
-%例えば，代入文は以下のように定義される．
-%\begin{alignat*}{2} 
-%  & \projection{id:\tau = Exp}{A} =
-%  \begin{cases}
-%    id = \projection{Exp}{A} & \text{if}~ {\color{cyan}A} \in \text{rolesOf\_t}(\tau)\\
-%    \projection{Exp}{A} & \text{otherwise}
-%  \end{cases}\\
-%\end{alignat*}
-%\textsf{rolesOf\_t}は型$\tau$から参加者の型を文字列として返す関数である．$\projection{Exp}{A}$で式は再帰的に射影されて，文字列となる．
-%
-%(例) $\text{A} \rightarrow \text{B}$へのメッセージ
-(例)参加者$\cyan{\text{A}},\cyan{\text{B}}$が関わるクラス$\textsf{Foo}$の射影
-\begin{alignat*}{2} 
-  &~~~~~~~~~\textsf{PyChoral} ~~~~~~~~~~~\Rightarrow~~~~ \textsf{Python}\\
-  &\projection{\textsf{class} ~\text{Foo} \text{(Ch2[{\cyan{A}},{\cyan{B}}])}}{A} ~\Rightarrow~ \textsf{class} ~\text{Foo\_{\cyan{A}}}(~)\\
-  &\projection{\textsf{class} ~\text{Foo} \text{(Ch2[{\cyan{A}},{\cyan{B}}])}}{B} ~\Rightarrow~ \textsf{class} ~\text{Foo\_{\cyan{B}}}(~)\\
-  %&\projection{\textsf{class} ~\text{Foo} \text{(Ch2[{\cyan{A}},{\cyan{B}}])}}{C} ~\Rightarrow~ 
-\end{alignat*}
-\vspace*{-20pt}
-\subsection{エンドポイント射影の実装}
-本研究では既存のPythonパーサーを活用する．Choralでは\mblue{@R}を各インターフェースに付属させることで参加者の情報を取得していたが，
-Mypyの検査器は\mblue{@}を認識できないため，その際に参照する標準ライブラリ\textsf{typeshed}内に\textbf{At}クラス，
-\textbf{Channel}クラスを追加し，参加者の情報を取る．
-\begin{lstlisting}
-class At(Generic[T1,R1],T1):
-  pass
-class Channel(Generic[T1,R1,R2]):
-  def com(self,msg:At[T1,R1]) -> At[T1,R2]:
-    pass
-  def select(self,msg:At[T1,R1]) -> At[T1,R2]:
-    pass
-class object:
-  ... 
-  def __matmul__(self:Self, _:R1) -> At[Self,R1]: ...
+分岐を含むコレオグラフィのエンドポイント射影で重要なのは，ある参加者で発生した条件分岐をいかにして他の参加者に伝えるか，という仕組みを実現することである．これを実現するのが\textbf{マージ}である．
+PyChoralにおけるエンドポイント射影およびマージの理論はChoralを模倣している．
+if文におけるマージは，if文の条件式を判断した参加者以外が条件式の結果に相当する列挙型の値を受信して分岐することにより実現する．
+PyChoralではPython3.10から導入されたmatch文を使用している．
+match文のケースはCode \ref{ch}の6,9行目にある\texttt{select}メソッドで送信した列挙型の値で分ける．
+Code \ref{ch}の6行目から射影によりCode \ref{python}の5-7,10行目が生成される．
+Code \ref{ch}の9行目からは射影によりCode \ref{python}の5,8-10行目が生成される．
+\texttt{case \_} は共通のケースであるため，統合されて一つになる．
+\texttt{{\color{red}{OddEven.EVEN}},{\color{blue}{OddEven.ODD}}}は独立したケースであるため，マージ後のmatch文にそのまま加える．
+これにより，条件分岐に関係ない参加者も分岐を考慮した形でエンドポイント射影される．
+生成された\texttt{A,B}のPythonプログラムは，エンドポイント射影およびマージによりデッドロックが起こることなく連携して動作することが可能である．
+
+%PyChoralはPythonの構文や型システムを踏襲して構築されている．PyChoralを使ったコレオグラフィはクラスを用いて構築する．
+%参加者間では，コレオグラフィ中で生成するチャネルを用いて通信する．
+%Code \ref{ch}は参加者\texttt{A}と\texttt{B}との挨拶のコレオグラフィである．
+%\texttt{A}と\texttt{B}は\textsf{greeting}メソッドを呼ぶ．\texttt{A}は引数としてメッセージ\texttt{msg}を渡し，戻り値として\texttt{B}からのメッセージを受け取る．
+%\texttt{B}には引数，戻り値ともにない．\texttt{A}が渡した文字列が\texttt{"hello"}であれば，\texttt{B}から送られてくる戻り値が\texttt{"hello"}となる．
+%それ以外ならば，\texttt{"bye"}となる．
+%2-4行目はクラスのコンストラクタを表す．ここでは\texttt{A}から\texttt{B}へ列挙型の\texttt{Choice}を送るチャネル\texttt{chAB}と，\texttt{B}から\texttt{A}へ文字列を送るチャネル\texttt{chBA}を生成している．
+%5-11行目は\texttt{A}と\texttt{B}が連携して動作するメソッド\texttt{greeting}である．
+%\texttt{A}から\texttt{B}に送るメッセージ\texttt{msg}を引数にとり，それに基づいて動作する．
+%6行目のif文で，\texttt{A}が\texttt{B}に送るメッセージが\texttt{"hello"}であるかどうかで分岐する．この分岐の結果はまだ\texttt{B}にはまだ知らされない．
+%7,8行目は\texttt{"hello"}を送る場合，10,11行目は\texttt{"hello"}以外を送る場合である．それぞれ\texttt{B}から\texttt{A}に\texttt{"hello"}か\texttt{"bye"}を送る．
+%7,10行目にある\texttt{select}は条件分岐の結果を示す列挙型の値を送るメソッドである．
+%\texttt{com}は送信者の情報を含む任意の型をもつ値を送るメソッドである．
+%\begin{lstlisting}[caption=参加者\texttt{A,B}のコレオグラフィ,label=ch]
+%  class Greeting(Choreograhy2[A,B]):
+%    def __init__(self) -> None:
+%      self.chAB = Channel[Choice,A,B]()
+%      self.chBA = Channel[str,B,A]()
+%    def greeting(self,msg:At[str,A]) -> At[str,A]:
+%      if msg == "hello"@A():
+%        self.chAB.select(|Choice.HELLO|@A())
+%        return self.chBA.com("hello"@B())
+%      else:
+%        self.chAB.select(`Choice.BYE`@A())
+%        return self.chBA.com("bye"@B())
+%  \end{lstlisting}
+%  \vspace*{-7pt}
+
+%クラス\texttt{Greeting(Choreograhy2[A,B])}からエンドポイント射影により，クラス\texttt{Greeting\_A},\texttt{Greeting\_B}が生成される．
+%参加者\texttt{A,B}はプロセスから\texttt{Greeting\_A},\texttt{Greeting\_B}のメソッド\texttt{greeting}を呼び出すことにより連携して動作する．
+%Code \ref{python}はCode \ref{ch}から射影された\texttt{B}のPythonプログラムである．型注釈や\texttt{B}が関連しない式や文は除去される．
+%\begin{lstlisting}[caption=参加者\texttt{B}のPythonプログラム,label=python]
+%class Greeting_B():
+%  def __init__(self):
+%    self.chAB = Channel[Choice,A,B]()
+%    self.chBA = Channel[str,B,A]()
+%  def greeting(self):
+%    match self.chAB.select():
+%      case |Choice.HELLO|:
+%        return self.chBA.com("hello")
+%      case `Choice.BYE`:
+%        return self.chBA.com("bye")
+%      case _:
+%\end{lstlisting}
+%\vspace*{-7pt}
+%分岐を含むコレオグラフィのエンドポイント射影で重要なのは，ある参加者で発生した条件分岐をいかにして他の参加者に伝えるか，という仕組みを実現することである．これを実現するのが\textbf{マージ}である．
+%PyChoralにおけるエンドポイント射影およびマージの理論はChoralを模倣している．
+%if文におけるマージは，if文の条件式を判断した参加者以外が条件式の結果に相当する列挙型の値を受信して分岐することにより実現する．
+%PyChoralではPython3.10から導入されたmatch文を使用している．
+%match文のケースはCode \ref{ch}の7,10行目にある\texttt{select}メソッドで送信した列挙型の値で分ける．
+%Code \ref{ch}の7行目から射影によりCode \ref{python}の6-8,11,12行目が生成される．
+%Code \ref{ch}の10行目からは射影によりCode \ref{python}の6,9-12行目が生成される．
+%\texttt{case \_} は共通のケースであるため，統合されて一つになる．
+%\texttt{{\color{red}{Choice.HELLO}},{\color{blue}{Choice.BYE}}}は独立したケースであるため，マージ後のmatch文にそのまま加える．
+%これにより，条件分岐に関係のない参加者も分岐を考慮した形でエンドポイント射影される．
+%生成された\texttt{A,B}のPythonプログラムは，エンドポイント射影およびマージによりデッドロックが起こらずに連携して動作することが可能である．
+
+
+
+
+
+\section{PyChoralの設計と実装}
+
+PyChoralはエンドポイント射影において型情報を活用する．
+これは，すべての式や文が射影される参加者と関連するかどうかに基づいて射影をするためである．
+例えば，関数呼び出しの射影$\projection{f(\overline{e}):\tau}{A}$は引数と戻り値の型に，
+射影される参加者の情報が含まれているかどうかで場合分けされる．%射影後の構文木が変化する．
+ここで，$\projection{~}{A}$は参加者Aに対しての射影であることを示す．$\tau$は返値の型情報である．
+引数$\overline{e}$は式のリストである．
+%例えばメソッド呼び出し$\projection{\texttt{self.ChBA.com("bye"\mblue{@}B())}}{A}$
+このようなエンドポイント射影を実現するために，PyChoralはPythonの基本型やクラスに参加者の情報を含める形で拡張している．
+具体的な手法は次の2つである．%\textbf{型の拡張}と\textbf{式の拡張}で参加者の情報をPythonの型情報に組み込む形で拡張している．
+\\
+$\blacksquare$ \textbf{型の拡張}$~$参加者の情報を含む型として\texttt{At[T,R]}や\texttt{Choreograhy2[R1,R2]}，\texttt{Choreograhy3[R1,R2,R3]}を定義する．
+\texttt{At[T,R]}は参加者\texttt{R}に割り当てられる値の型\texttt{T}を表す型である．
+PyChoralにおける\texttt{At[T,R]}はPythonの基本型\texttt{T}と同様に扱える．
+\texttt{Choreograhy2[R1,R2]}，\texttt{Choreograhy3[R1,R2,R3]}はPyChoralプログラムでクラス宣言をする際に継承する基底クラスの型である．
+型パラメータに参加者の情報を持ち，参加者の人数で継承するクラスを指定する．
+\\
+$\blacksquare$ \textbf{式の拡張}$~$Pythonのすべての式が属する型であるオブジェクト型に\mblue{@}演算子を追加で定義する．
+これにより，\texttt{exp\mblue{@}R()}のように式\texttt{exp}に参加者\texttt{R}を割り当てることができる．
+ここで，\texttt{exp}の型が\texttt{T}であれば\texttt{exp\mblue{@}R()}の型は\texttt{At[T,R]}となる．
+\\
+\mblue{@}演算子および型クラス\texttt{At},\texttt{Choreograhy2},\texttt{Choreograhy3}はエンドポイント射影で参加者の情報を得るために用いられる．
+これらを実体を持たないMypyの型宣言の形で定義することにより，各参加者のプログラムでは\mblue{@}演算子，型クラス\texttt{At,Choreograhy2,Choreograhy3}が消去される．%標準のPythonプログラムとして実行できる．
+
+
+
+
+
+\section{アプリケーションによる評価}
+
+Code \ref{merge}はChoralのプログラム例の一つであるParallel MergeSortをPyChoralで実装したものである(可読性向上のために型情報は省略する)．
+クラス\texttt{MergeSort}の参加者であるMergerと2つのSorterはパラメータ\texttt{M,S1,S2}として扱う．
+2,3行目ではコンストラクタを記述している．\texttt{chS2M,chS1S2,chS2M}は型\texttt{T}の値を
+双方向(\texttt{R1}$\rightleftarrows$\texttt{R2})に送り合えるチャネル\texttt{SymChannel[T,R1,R2]}の型をもつ．
+4行目はメソッド\textsf{sort}の定義であり，リストを分割する必要性を確認する条件式で構成される．
+5-15行目は分割する場合である．10行目でリストの中心(\texttt{pivot})を見つけ，それを境目にリストを分割して得られるサブリストを2つのSorterに送信する．
+8,9行目では分割されたリストをさらにソートするために，MergerとSorterの役割を入れ替えながらMergeSortを再帰的に呼び出す．
+%9行目では\texttt{S1}がMergerとなり，\texttt{S2,M}がSorterとなる．
+%10行目では\texttt{S2}がMergerとなり，\texttt{M,S1}がSorterとなる．
+このようにMergerとSorterの役割を代えながらリストの分割ができなくなるまでソートを行う．
+各Sorterによって順序付けられたリストは15行目にあるメソッド\textsf{merge}の呼び出しによって結合される．
+20行目にある\textsf{merge}はSorterがもつ2つのリストをMergerが結合するメソッドである．
+このメソッドはローカルであり，リストの結合を逐次的なアルゴリズムのように実行する．
+MergeSortのコードは，参加者の型情報により，リストのソートを並列して実行可能であるPythonプログラムを生成できる．
+さらに，それらは理論的にデッドロックフリー性をもつ．
+%MergeSortではまず，Mergerがリストを二分割し，2つのSorterに送信する．Sorterはそれぞれ受信したサブリストをソートし，その結果をMergerに返す．
+%Mergerが順序付けられたサブリストを取得すると，それらをマージして完全に順序付けられたリストを返す．
+%mb = Mergesort[S1,S2,M](self.s1, self.s2, self.m, self.chS1S2, self.chS2M, self.chMS1)
+%mc = Mergesort[S2,M,S1](self.s2, self.m, self.s1, self.chS2M, self.chMS1, self.chS1S2)
+      
+\begin{lstlisting}[caption = MergeSort.py, label = merge]
+class Mergesort(Choreograhy3[M,S1,S2]):
+  def __init__(self,m,s1,s2,chMS1,chS1S2,chS2M):
+    !#  constructor #!
+  def sort(self,a):
+    if len(a)@self.m() > 1@self.m():
+      self.chMS1.select(MChoice.L@self.m())
+      self.chS2M.select(MChoice.L@self.m())
+      mb = Mergesort[S1,S2,M]( !# arguments #! )
+      mc = Mergesort[S2,M,S1]( !# arguments #! )
+      pivot = float(floor(len(a)/2))@self.m()
+      b = a[0:int(pivot)]
+      lhs = mb.sort(self.chMS1.com(b@self.m()))
+      c = a[int(pivot):len(a)]
+      rhs = mc.sort(self.chS2M.com(c@self.m()))
+      return self.merge(self.chMS1.com(lhs),self.chMS1.com(rhs))
+    else:
+      self.chMS1.select(MChoice.R@self.m())
+      self.chS2M.select(MChoice.R@self.m())
+      return a
+  def merge(self,lhs,rhs):
+      ... 
 \end{lstlisting}
-$\texttt{T1,R1,R2}$はジェネリック型であり，任意の型をとる．
-通信メソッド\textsf{com}，選択メソッド\textsf{select}は，Channelの第2引数から第3引数へ参加者の情報が追加された値を転送するメソッドとして定義する．
-また，objectクラスに\mblue{@}のためのメソッド\texttt{\_\_matmul\_\_}を追加する．これにより，Mypyの型検査で\mblue{@}が型エラーにならない．
-
-PyChoralプログラムの射影はトップレベルの項から行われる．\textsf{projection}は文のリスト\textsf{n}，
-射影対象の参加者\textsf{r}，型チェッカー\textsf{tc}を引数にとり，新しいデータ構造を返す関数である．
-各文，各式はPythonの標準関数\texttt{isinstance()}で型を制限し，再帰的に射影を行う．
-$\textsf{isinstance()}$はオブジェクトが指定されたクラスまたは型に属しているかどうかを判定する関数である．
-\begin{lstlisting}[caption=projection.py,label=data]
-def projection_all(n:list[Statement],r:str,tc:TypeChecker) -> list[Stmt]:
-  result:list[Stmt] = [ ]
-  for node in n:
-      if isinstance(node,ClassDef):
-          result += [projection_class(node,r,tc)]
-      ...
-  return result
-\end{lstlisting}
-
-Importを含む文，ブロック，クラス定義，関数定義は射影後に独自のデータ構造で生成される．
-親クラス\textsf{Stmt}は抽象的な構文木であり，クラス継承によりASTの具体的なノードを子クラス(\textsf{Asg,ClassDef,FuncDef,...})として定義する．
-新しく定義したデータクラスはMypyに備わっている標準のデータクラスから射影定義に従って必要なパラメータのみ抽出したものである．
-射影により生成されたデータクラスはマージや正規化で処理した後に，関数\texttt{stmt\_to\_string}によりPythonファイルに文字列として出力される．
-\begin{lstlisting}[caption=data.py,label=data]
-class Stmt:
-    pass
-class Asg(Stmt): #Assignment
-  def __init__(self, l:str, r:str, t:Type|None):
-      self.lvalues = l
-      self.rvalue = r
-      self.type = t
-... 
-def stmt_to_string(s:Stmt,indent:int) -> str:
-  if isinstance(s,Asg):
-    return " "*indent+s.lvalues+" = "+s.rvalue
-  ... 
-\end{lstlisting}
-
-\subsection{アプリケーションによる評価}
-%以下はPyChoralでのMergeSortの実装プログラムである．
 %PyChoralを用いたアプリケーションとしてMergeSortを実装し，PyChoralの有用性を確認した。
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{まとめ}
-本研究はPythonを拡張したコレオグラフィックプログラミング言語PyChoralを実装した．PyChoralプログラムは射影の定義によって各参加者のPythonプログラムが生成される．
-これらはコレオグラフィに従っているため，デッドロック等の並行性起因エラーが生じないことが保証されている．これにより，マルチスレッド環境におけるプログラムが
-単一の言語で記述されるプログラムによって実装可能となり，Pythonプログラマの手助けとなる．
-PyChoralは，現段階で3者間までの通信しか対応していないため，それ以上の参加者に対応可能にすることが今後の課題である．
-%今後の課題としては，3者間までの通信しか対応していないため，それ以上の参加者に対応可能にする点と，他の手法とのパフォーマンスの比較をする点が挙げられる．
+
+本研究はPythonを拡張したコレオグラフィックプログラミング言語PyChoralを構築した．
+エンドポイント射影の際に参加者の情報を含む型情報を活用することで，不必要な式や文が排除された
+各参加者のPythonプログラムが生成できる．
+PyChoralをIoTや機械学習を扱うPythonプログラムに応用することが今後の課題である．
+
+%本研究はPythonを拡張したコレオグラフィックプログラミング言語PyChoralを構築した．
+%PyChoralプログラムからエンドポイント射影によって各参加者のPythonプログラムが生成される．
+%これらは並行性に起因するエラーが生じないことが保証されている．これにより，
+%複数参加者の連携動作を単一の言語でプログラミングが可能となり，Pythonプログラマの手助けとなる．
+%PyChoralをIoTや機械学習を扱うPythonプログラムに応用していくことが今後の課題である．
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %参考文献

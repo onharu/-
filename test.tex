@@ -1,25 +1,34 @@
 \documentclass{article}
-\usepackage{graphicx}
-%\usepackage[dvipdfmx]{graphicx}
-\usepackage[dvipdfmx]{color}
-\usepackage{float}
+\usepackage{xcolor}
 \usepackage{listings}
-\usepackage{jvlisting} %日本語のコメントアウトをする場合jvlisting（もしくはjlisting）が必要
-\usepackage{amsmath}
-\usepackage{mathtools}
-\usepackage{stmaryrd} % \llparenthesis & rrparenthesis
-\usepackage[dvipsnames]{xcolor}
-\usepackage[hyphens]{url}
+
+% キーワードのスタイル
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\definecolor{myblue}{rgb}{0,0,1}
+\definecolor{myorange}{rgb}{1,0.5,0}
 
 \lstset{
-    moredelim=**[is][\color{Green}]{\#}{\#}
+  language=Python,
+  keywordstyle=\color{blue},
+  ndkeywordstyle=\color{myorange},
+  identifierstyle=\color{black},
+  commentstyle=\color{orange},
+  stringstyle=\color{mymauve},
+  basicstyle=\ttfamily,
+  breaklines=true,
+  columns=fullflexible,
 }
 
 \begin{document}
 
 \begin{lstlisting}
-#This is some highlighted text.
-print#("Hello, World!")
+def hello_world():
+    print("Hello, World!")
+
+# This is a comment
+x = 42
 \end{lstlisting}
 
 \end{document}

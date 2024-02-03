@@ -1,12 +1,8 @@
 \begin{thebibliography}{1}
 
 \bibitem{choral}
-Choral.
-\newblock \url{https://www.choral-lang.org/}.
-
-\bibitem{endpoint}
-Alceste Scalas and Nobuko Yoshida.
-\newblock Less is more: multiparty session types revisited.
-\newblock {\em POPL}, 2019.
+S.~Giallorenzo et~al.
+\newblock Choreographies as objects.
+\newblock {\em CoRR}, Vol. abs/2005.09520, , 2020.
 
 \end{thebibliography}
