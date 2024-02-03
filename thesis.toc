@@ -7,10 +7,12 @@
 \contentsline {chapter}{\numberline {第4章}PyChoralの設計と実装}{7}{}%
 \contentsline {section}{\numberline {4.1}PyChoralの構文とエンドポイント射影の定義}{7}{}%
 \contentsline {section}{\numberline {4.2}エンドポイント射影の実装}{9}{}%
-\contentsline {chapter}{\numberline {第5章}PyChoralを利用したアプリケーションによる評価}{17}{}%
-\contentsline {chapter}{\numberline {第6章}まとめ，今後の課題}{18}{}%
-\contentsline {chapter}{参考文献}{19}{}%
-\contentsline {chapter}{\numberline {付録A}Definition of Projection, Merging, Normalizer}{20}{}%
-\contentsline {section}{\numberline {A.1}Projection to Python}{20}{}%
-\contentsline {section}{\numberline {A.2}Merging}{21}{}%
-\contentsline {section}{\numberline {A.3}normalizer}{22}{}%
+\contentsline {chapter}{\numberline {第5章}PyChoralを利用したアプリケーションによる評価}{13}{}%
+\contentsline {chapter}{\numberline {第6章}まとめ，今後の課題}{15}{}%
+\contentsline {chapter}{参考文献}{16}{}%
+\contentsline {chapter}{\numberline {付録A}Projection, Merging, Normalizerの定義}{17}{}%
+\contentsline {section}{\numberline {A.1}Projection to Python}{17}{}%
+\contentsline {section}{\numberline {A.2}Merging}{18}{}%
+\contentsline {section}{\numberline {A.3}Normalizer}{19}{}%
+\contentsline {chapter}{\numberline {付録B}射影後のデータ構造}{21}{}%
+\contentsline {chapter}{\numberline {付録C}3者間のコレオグラフィのランタイム}{23}{}%

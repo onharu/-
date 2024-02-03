@@ -32,10 +32,11 @@
   numbersep=0.5zw,
   lineskip=-0.3ex,
   keywords={At,Choreograhy2,Choreograhy3}, 
-  %ndkeywords={com,select},% 追加のキーワードを指定
+  ndkeywords={com,select},% 追加のキーワードを指定
   moredelim=**[is][\color{gray}]{!}{!}, % 特定の要素を赤に設定
   moredelim=**[is][\color{red}]{|}{|},
-  moredelim=**[is][\color{blue}]{`}{`}
+  moredelim=**[is][\color{blue}]{`}{`},
+  moredelim=**[is][\color{Magenta}]{^}{^}
 }
 %\usepackage{xcolor}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -116,7 +117,7 @@ $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$\url{https://github.com/onharu/mypytest}
 %  \label{cho}
 %\end{figure}
 
-エンドポイント射影とは，コレオグラフィから各参加者のプログラムを導出する操作である．
+エンドポイント射影 \cite{endpoint}とは，コレオグラフィから各参加者のプログラムを導出する操作である．
 コレオグラフィックプログラミング言語にはコンパイラが付属しており，コンパイラはエンドポイント射影理論によって並行に動作する実行可能なプログラムを出力する．
 
 \begin{figure}[H]
@@ -126,7 +127,7 @@ $~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~$\url{https://github.com/onharu/mypytest}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Choral}
-Choral \cite{choral}はJavaをベースとしたコレオグラフィックプログラミング言語である．
+Choral \cite{objective_Choreographies}はJavaをベースとしたコレオグラフィックプログラミング言語である．
 Choralは，並行・分散システムに従わせたいプロトコル全体を単一のプログラムとして作成できるため，デッドロックが発生しないようにコーディングする必要があったプログラマの負担が軽減される．
 Choralのオブジェクトには${\color{blue}{T@(R_1,\cdots,R_n)}}$という形式の型があり，Javaの基本的なオブジェクトインターフェイス$T$に
 各参加者の情報となるパラメータ${\color{blue}{R_1,\cdots,R_n}}$が付随する．
@@ -180,7 +181,7 @@ Mypy \cite{Mypy}はPythonの静的型検査器であり，既存のPythonコー�
  def greeting(name: str) -> str:
    return 'Hello ' + name
  
- greeting('World')  # No error
+ greeting('World') 
  greeting(3)         
  |# Argument 1 to 'greeting' has incompatible type 'int'; expected 'str'|
  greeting(b'Alice')  
@@ -212,12 +213,12 @@ AとBはそれぞれ\textsf{div2}メソッドを呼ぶ．Aには整数値\texttt
 回数を数える変数\texttt{count}は0に指定する．nは任意の整数値を代入できる．例えば，$n=8$の場合はBに整数値3が伝わる．$n=-3$の場合はに整数値0が伝わる．
 
 \begin{lstlisting}[numbers=none]
- # A
- div_a = Divide2_A()
- div_a.divide_by_two(n,0)
- # B
- div_b = Divide2_B()
- div_b.divide_by_two()
+ def run_A():
+     div_a = Divide2_A()
+     div_a.divide_by_two(n,0)
+ def run_B():
+     div_b = Divide2_B()
+     div_b.divide_by_two()
 \end{lstlisting}
 1行目はクラス定義であり，型パラメータ\texttt{A}および\texttt{B}が通信の参加者となる．
 2,3行目はクラスのコンストラクタを表す．ここではAからBへobject型の値を送るチャネル\texttt{chAB}を生成している．
@@ -255,7 +256,7 @@ AとBはそれぞれ\textsf{div2}メソッドを呼ぶ．Aには整数値\texttt
 %Code \ref{pythonB}は，Code \ref{pychoral}から射影されたBのPythonプログラムである．
 Code \ref{pythonA}とCode \ref{pythonB}は，Code \ref{pychoral}からエンドポイント射影された各参加者のPythonプログラムである．
 型注釈，それぞれの参加者が関連しない式や文は除去される．
-\begin{lstlisting}[caption = 参加者APythonプログラム, label = pythonA]
+\begin{lstlisting}[caption = 参加者AのPythonプログラム, label = pythonA]
  class Diveide2_A():
      def __init__(self):
          self.chAB = Channel[object,A,B]('A','B')
@@ -304,11 +305,11 @@ Code \ref{pychoral}の9行目からは射影によりCode \ref{pythonB}の5,8-10
 生成されたA,BのPythonプログラムは，エンドポイント射影およびマージによりデッドロックが起こることなく連携して動作することが可能である．
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{PyChoralの設計と実装}
-この章ではPyChoralの構文およびエンドポイント射影の設計について述べる．その後，その設計をもとに本研究の実装について述べる．
+この章ではPyChoralの構文およびエンドポイント射影の設計について述べる．その後，設計をもとにした本研究の実装について述べる．
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{PyChoralの構文とエンドポイント射影の定義}
-PyChoralの構文はPythonと同一である．図 \ref{syntax}はPythonの構文定義である．
-プログラムの構文木はトップレベルからクラス定義(\textsf{Class})，関数およびメソッド定義(\textsf{FuncDef})，文(\textsf{Stm})，式(\textsf{Exp})のいずれかの構文要素で構成される．
+図 \ref{syntax}はPythonの構文定義である．PyChoralの構文はPythonと同一であり，
+プログラムの構文木はトップレベルからクラス定義($Class$)，関数およびメソッド定義($FuncDef$)，文($Stm$)，式($Exp$)のいずれかの構文要素で構成される．
 PyChoralでは全ての式に参加者の情報が割り当てられる．
 参加者の情報はPythonの基本型とともに{\color{Green}{Typed Annotation}}で表現されるか，リテラル値に\mblue{@}をつけて表現される．
 オーバーラインが引かれている$Exp$や$Stm$などはそれらのリストを表す．
@@ -337,7 +338,7 @@ PyChoralの構文に無く，安全でないプログラムを射影する場合
 %\begin{alignat*}{2} 
 %  &~~~~~~~~~\textsf{PyChoral} ~~~~~~~~~~~~~\Longrightarrow~~~~~~ \textsf{Python}\\
 %  &\projection{\textsf{class} ~\text{Foo} \text{(Ch2[{\cyan{A}},{\cyan{B}}])}}{A} ~~~\Longrightarrow~~~ \textsf{class} ~\text{Foo\_{\cyan{A}}}(~)\\
-%  &\projection{\textsf{class} ~\text{Foo} \text{(Ch2[{\cyan{A}},{\cyan{B}}])}}{B} ~~~\Longrightarrow~~~ \textsf{class} ~\text{Foo\_{\cyan{B}}}(~)\\
+%  &\projection{\textsf{class} ~\text{Foo} \text{(Ch2[{\cyan{A}},{\cyan{B}}])}}{B} ~~~\Longrightarrow~~~ \textsf{class} ~\text{Foo\_{\cyan{R}}}(~)\\
 %  &\projection{\textsf{class} ~\text{Foo} \text{(Ch2[{\cyan{A}},{\cyan{B}}])}}{C} ~~~\Longrightarrow~~~ 
 %\end{alignat*}
 %
@@ -381,10 +382,10 @@ PyChoralの構文に無く，安全でないプログラムを射影する場合
     \texttt{Unit.id}(\projection{Exp_1}{A},\overline{\projection{Exp_2}{A}}) ~~~~~\text{otherwise}
   \end{cases}\\
 \end{alignat*}
-メソッド呼び出しの場合分けに出てくる$\textsf{rolesOf(~)}$とは，式の型情報を参照し，その型から参加者の情報を文字列の集合として返す関数である．
+%メソッド呼び出しの場合分けに出てくる$\textsf{rolesOf(~)}$とは，式の型情報を参照し，その型から参加者の情報を文字列の集合として返す関数である．
 戻り値の型情報に射影先の参加者が含まれていない場合は\textsf{Unit}値を返す．レシーバオブジェクトや引数はそれぞれ再帰的に射影される．
-例えば，Code \ref{pychoral}の10行目にあるメソッド呼び出し$\texttt{self.chAB.com(count@A())}$は参加者A,Bに対して以下のように射影され，Pythonのプログラムとして生成される．
-この例の場合，$\textsf{rolesOf}(Exp_1) = \{\text{A,B}\}$, $\textsf{rolesOf}(\overline{Exp_2}) = \{\text{A}\}$, $\textsf{rolesOf}(Exp_1.f(\overline{Exp_2})) = \{\text{B}\}$である．
+例えば，Code \ref{pychoral}の10行目にあるメソッド呼び出し$\texttt{self.chAB.com(count@A())}$は参加者A,Bに対して，以下のように射影される．
+%この例の場合，$\textsf{rolesOf}(Exp_1) = \{\text{A,B}\}$, $\textsf{rolesOf}(\overline{Exp_2}) = \{\text{A}\}$, $\textsf{rolesOf}(Exp_1.f(\overline{Exp_2})) = \{\text{B}\}$となる．
 \begin{alignat*}{2} 
   &\projection{\texttt{self.chAB.com(count@A())}}{A} &&~\Longrightarrow~ \texttt{Unit.id}(\projection{\texttt{self.chAB}}{A}\texttt{.com}(\projection{\texttt{count@A()}}{A})) \\
   &&&~\Longrightarrow~ \texttt{Unit.id}(\texttt{self.chAB.com(count)})\\
@@ -394,6 +395,10 @@ PyChoralの構文に無く，安全でないプログラムを射影する場合
   %&\projection{\texttt{self.chAB.com(count@A())}}{B} ~\Rightarrow~ \text{ChAB.com(\texttt{Unit.id})}\\
   %&\projection{\texttt{self.chAB.com(count@A())}}{C} ~\Rightarrow~ \texttt{Unit.id}(\texttt{Unit.id},\texttt{Unit.id})
 \end{alignat*}
+メソッド呼び出しの場合分けに出てくる$\textsf{rolesOf(~)}$とは，式の型情報を参照し，その型から参加者の情報を文字列の集合として返す関数である．
+$\texttt{self.chAB.com(count@A())}$の場合では，$\textsf{rolesOf}(Exp_1) = \{\text{A,B}\}$, $\textsf{rolesOf}(\overline{Exp_2}) = \{\text{A}\}$, $\textsf{rolesOf}(Exp_1.f(\overline{Exp_2})) = \{\text{B}\}$となる．
+
+
 次に，3章で述べた条件分岐によるエンドポイント射影とマージの定義について述べる．
 文\textsf{Stm}は，文中に現れる式や文をそれぞれ射影する形式を取る．例えばreturn文のエンドポイント射影は
 $\projection{\mblue{return} ~ Exp}{A} = \mblue{return} ~ \projection{Exp}{A}$となり，
@@ -415,7 +420,7 @@ $\projection{\mblue{return} ~ Exp}{A} = \mblue{return} ~ \projection{Exp}{A}$と
 \end{alignat*}
 
 if文は，条件式$Exp$の型情報に射影先の参加者が含まれる場合，そのままif文の構文を保ったまま再帰的に射影が行われていく．
-そうでない場合は，条件分岐の結果がどうなろうと振舞えるようにするために，then節とelse節に存在する後続の文を正規化(${\color{red}{\llbracket}}~{\color{red}{\rrbracket}}$)し，マージ($~{\color{red}{\sqcup}}~$)する必要がある．
+そうでない場合は，条件分岐の結果がどうなろうと振舞えるようにするために，then節とelse節に存在する後続の文を正規化し，マージする必要がある．%(${\color{red}{\llbracket}}~{\color{red}{\rrbracket}}$)し，マージ($~{\color{red}{\sqcup}}~$)する必要がある．
 \begin{alignat*}{2} 
   &\projection{\mblue{if}~Exp:Stm_1~;\mblue{else}:Stm_2 ~;\overline{Stm}}{A}=\\
   &
@@ -520,281 +525,337 @@ class SymChannel(Generic[T1,R1,R2]):
     def com(self,msg:At[T1,R1]) -> At[T1,R2]:
     @overload
     def com(self,msg:At[T1,R2]) -> At[T1,R1]:
-    @overload
-    def select(self,msg:At[T1,R1]) -> At[T1,R2]:
-    @overload
-    def select(self,msg:At[T1,R2]) -> At[T1,R1]:
+    ... 
 \end{lstlisting}
 
-
-PyChoralではMypyを活用した型検査のプロセスを改造し，型検査を行なった後に各参加者の抽象構文木を再構築する．
-射影後に再構築される構文木は新しいデータ構造を取り，それに従ったPythonプログラムが生成される．
-
+図 \ref{pychoralprocess}はPyChoralプログラムから各参加者のPythonプログラムが生成されるプロセスである．
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.4]{image/pychoralprocess.png}
   \caption{PyChoralプロセス}
   \label{pychoralprocess}
 \end{figure}
-＜Mypyの改造＞
+PyChoralで記述されたプログラムは一度抽象構文木に変換されて保存される．この構文木に対して型検査を行った後に，エンドポイント射影により
+各参加者の構文木を再構築する．この構文木をもとに各参加者のPythonプログラムが生成される．
+%PyChoralではMypyを活用した型検査のプロセスを改造し，型検査を行なった後に各参加者の抽象構文木を再構築する．
+Mypyは，Pythonの標準的なライブラリや型情報を提供するリポジトリである\textsf{typeshed}を参照して型検査を行う．
+本研究では，\texttt{typeshed}の中に上記で述べた\texttt{At}や\texttt{Choreograhy2}，\texttt{Choreograhy3}，
+\mblue{@}演算子などの定義を追加した型検査器で参加者の情報を得る．
 
-PyChoralはPythonベースの言語のため，JavaベースのChoralを模倣するには静的型付け言語として扱え，コンパイル時にエラーの有無を判別したい．そのため，Mypyを活用して静的に型をつける．
-ただし，Mypyで型注釈をつけらればChoralと同じように動くかというと，そうではない．
-
-まず，ChoralはJavaのパーサーを改良し，独自のコンパイラを使用してChoralプログラムからJavaプログラムを自動導出しているが，本研究では既存のPythonパーサーをそのまま活用する．
-Choralはクラス定義，インターフェース，変数，型に$\mblue{@}$で参加者の情報を加えていたが，Mypyの型検査ではこれを認識しない．
-この問題に対して，本研究では主に2つの方法で各参加者の情報をとることにした．
-
-1つ目の方法として，Mypyが型検査する際に参照する標準ライブラリのtypeshedに\textsf{At，Channel}といった新たな型クラスを追加し，変数の型注釈に参加者情報を加えられるようにした．
-\textsf{At，Channel}の引数はジェネリック型をとっており，任意の型を後から取ることができるプレースホルダーとして機能している．
-例えばPyChoralのプログラム例(Code \ref{pychoral})の3行目にある$\texttt{price:At[int,S]}$は，変数$\text{price}$の型が$\text{int}$で参加者$\text{S(Staff)}$に関連する値ということが分かる．
-
-2つ目の方法として，Mypyが型検査する際に参照されるobjectクラスに$\mblue{@}$のためのメソッド$\texttt{\_\_matmul\_\_}$を追加し，role.pyで各参加者に対して適用することで$\mathbf{123\mblue{@}A()}$
-のように$\mblue{@}$をつけてプログラミングしてもMypyの型検査が通るようにした．
-\begin{lstlisting}[caption=builtins.pyi]
-class At(Generic[T1,R1],T1):
-  pass
-class Channel(Generic[T1,R1,R2]):
-  ... 
-  def com(self,msg:At[T1,R1]) -> At[T1,R2]:
-      pass
-  def select(self,msg:At[T1,R1]) -> At[T1,R2]:
-      pass
-
-class object:
-  ... 
-  def __matmul__(self:Self, _:R1) -> At[Self,R1]: ...
+式の型情報あるいは変数の型注釈に含まれる参加者の情報は関数\texttt{rolesOf()},\texttt{rolesOf\_t()}によって取得する．
+%式の型情報あるいは変数の型注釈から参加者の情報を取得する関数として\texttt{rolesOf()},\texttt{rolesOf\_t()}を定義した．
+Code \ref{rolesof}は関数\texttt{rolesOf}の実装コードである．
+\begin{lstlisting}[caption= rolesOf, label = rolesof]
+def rolesOf(e:Expression, typeChecker:TypeChecker) -> list[str]:
+    t0 = get_type(typeChecker, e)
+    if isinstance(t0,mypy.types.ProperType):
+        if get_typename(t0) == "At":
+            return [get_typearg(t0,1)]
+        elif get_typename(t0) == "Channel":
+            return [get_typearg(t0,1),get_typearg(t0,2)]
+        elif get_typename(t0) == "SymChannel":
+            return [get_typearg(t0,1),get_typearg(t0,2)]
+        else:
+            return []
 \end{lstlisting}
-\begin{lstlisting}[caption=role.py]
-class Role: # base class
-  pass
-class A(Role):
-  def __matmul__(self, x): # @ を使えるようにする
-      pass
-\end{lstlisting}
-改造したtypeshedを用いてPyChoral言語で記述したファイルはmypytest.pyによって一度ASTに変換して保存する(\texttt{result})．
-mypycustomはMypy標準ファイルmain.pyを簡易的にしたファイルである．main.pyは構築したASTを保存せずに捨てていたが，mypycustomではASTを保存するように変更してある．
-%mypycustomでは$\texttt{options.preserve\_ast = True}$によってASTを保存する．
-この保存したASTに対して，木構造に変換し，その要素に対してプロジェクションを行う.
-\begin{lstlisting}[caption=mypytest.py,label=mypytest]
-filename = sys.argv[1]
-pychoralfile = filename + '.py'
-result : mypy.build.BuildResult | None = mypycustom.main(
-    ['--show-traceback', '--custom-typeshed', './typeshed', pychoralfile])
+\texttt{rolesOf()}は引数に式(\textsf{e})と型検査器(\texttt{typechecker})をとり，取得した参加者の情報を文字列のリストとして返す関数である．
+\texttt{Typechecker}はMypyが型検査を行うための型クラスである．
+式\texttt{e}の型情報は2行目にある\texttt{get\_type}関数によって得る．
+4-10行目では得られた型情報に対して場合分けをしている．
+4,6,8行目にある\texttt{get\_typename}は型クラスの名前を文字列として返す関数である．
+例えば\texttt{At[int,A]}という型を\texttt{get\_typename}に渡すと\texttt{"At"}が返ってくる．
+5,7,9行目にある\texttt{get\_typearg}は型クラスのパラメータから指定されたリストの要素を\texttt{get\_typename}によって文字列で返す関数である．
+例えば\texttt{Channel[str,A,B]}という型を\texttt{get\_typearg}に渡すと\texttt{["A","B"]}が返ってくる．
+\texttt{rolesOf\_t()}は型注釈としてプログラムに書かれている型情報から参加者名を取り出す関数である．
+\texttt{rolesOf()},\texttt{rolesOf\_t()}は受け取る引数は違うが，動作は同じである．
 
-src = result.graph[filename] 
-typechecker = src.type_checker()
+%\begin{lstlisting}[caption=mypytest.py,label=mypytest]
+%filename = sys.argv[1]
+%pychoralfile = filename + '.py'
+%result : mypy.build.BuildResult | None = mypycustom.main(
+%    ['--show-traceback', '--custom-typeshed', './typeshed', pychoralfile])
+%
+%src = result.graph[filename] 
+%typechecker = src.type_checker()
+%
+%def get_roles(stm_list:list[mypy.nodes.Statement]) -> str:
+%    ... 
+%roles = get_roles(src.tree.defs)
+%
+%for r in roles:
+%    pro_filename = pychoralfile.replace('.', '_' + r + '.')
+%    f = open(pro_filename, 'w')
+%    f.write('from pychoral' + str(len(roles)) + ' import *\n') 
+%    g = open(pro_filename, 'a')
+%    for stm in projection.projection_all(src.tree.defs,r,typechecker):
+%        data.stmt_to_string(stm,0)
+%        g.write(data.stmt_to_string(stm,0))
+%\end{lstlisting}
+%\texttt{filename}は射影の実行コマンドから受け取る．\texttt{src}には木構造に変換されたPyChoralプログラムが代入されており，\texttt{typechecker}は型検査器である．
+%\texttt{get\_roles}はPyChoralプログラム中のクラスから，Choreograhyクラスを元に関係する全ての参加者名を取得する関数である．
+%その後，全ての参加者に対して新たなファイルを作成し，射影した結果を各ファイルに印字していく．
+射影後に再構築される構文木は新たなデータ構造を取り，それに従ったPythonプログラムが生成される．
+クラス定義(\textsf{ClassDef})，関数定義(\textsf{FuncDef})およびPyChoralの構文に存在する文(\textsf{Stm})は射影後，独自のデータ構造で生成される．
+新しく定義したデータ構造はPythonのデータ構造と同じだが，PyChoralプログラムの式はエンドポイント射影により文字列に変換されているため，生成されるコンストラクタの型が異なる．
+マージや正規化は新しく定義したデータ構造を利用して行う．
 
-def get_roles(stm_list:list[mypy.nodes.Statement]) -> str:
-    ... 
-roles = get_roles(src.tree.defs)
-
-for r in roles:
-    pro_filename = pychoralfile.replace('.', '_' + r + '.')
-    f = open(pro_filename, 'w')
-    f.write('from pychoral' + str(len(roles)) + ' import *\n') 
-    g = open(pro_filename, 'a')
-    for stm in projection.projection_all(src.tree.defs,r,typechecker):
-        data.stmt_to_string(stm,0)
-        g.write(data.stmt_to_string(stm,0))
-\end{lstlisting}
-\texttt{filename}は射影の実行コマンドから受け取る．\texttt{src}には木構造に変換されたPyChoralプログラムが代入されており，\texttt{typechecker}は型検査器である．
-\texttt{get\_roles}はPyChoralプログラム中のクラスから，Choreograhyクラスを元に関係する全ての参加者名を取得する関数である．
-その後，全ての参加者に対して新たなファイルを作成し，射影した結果を各ファイルに印字していく．
-
-＜射影後のデータ構造＞
-
-Importを含む文，ブロック，クラス定義，関数定義は射影後，独自のデータ構造で生成される．
 親クラス\textsf{Stmt}は抽象的な構文木であり，クラス継承を使ってASTの具体的なノードを子クラス(\textsf{Block,ClassDef,...})として定義している．
-新しく定義したデータクラスはMypyに備わっている標準のデータクラスから射影定義に従って必要なパラメータのみ抽出したものである．
-射影によって構築された新たなデータクラスは関数\texttt{stmt\_to\_string}によって文字列に変換される．この際に\texttt{' '*indent}によって印字されるファイルでのインデントのずれなどにも考慮する．
+新しく定義したデータ構造はPythonのデータ構造と同様にコンストラクタを生成する．%から射影定義に従って必要なパラメータのみ抽出したものである．
+エンドポイント射影，マージ，正規化を施した構文木は関数\texttt{stmt\_to\_string}によって文字列に変換される．
+この文字列を新しく生成される各参加者のファイルに印字することでPythonプログラムを生成している．
+Code \ref{data}は新しく定義したデータ構造および印字関数\texttt{stmt\_to\_string}の一部である．
+%この際に\texttt{' '*indent}によって印字されるファイルでのインデントのずれなどにも考慮する．
 \begin{lstlisting}[caption=data.py,label=data]
-class Stmt:
-  pass
+ class Stmt:
+   pass
 
-class Pass(Stmt):
-  pass
-
-class Return(Stmt):
-    def __init__(self, exp:str):
-        self.expr = exp
-... 
-
-def stmt_to_string(s:Stmt,indent:int) -> str:
-    if isinstance(s,Pass):
-            return ' '*indent + 'pass'
-    elif isinstance(s,Return):
-        return ' '*indent + 'return ' + s.expr
-    ...
-\end{lstlisting}
-
-13,14行目に出てくる関数\texttt{isinstance()}はオブジェクトが指定されたクラスまたは型に属しているかどうかを判定するPythonの標準関数である．
-本研究では，関数\texttt{isinstance()}をクラスまたは型の制限に使用している．
-%%%%%%%%%%%%%%%%%
-＜projection\_all＞
-
-PyChoralプログラムの射影をするときはまず\textsf{projection\_all}が呼ばれる．関数\textsf{projection\_all}は
-Statementのリスト\textsf{n}，射影される参加者名\textsf{r}，型チェッカー\textsf{tc}を引数にとり，新しいデータ構造を返す関数である．
-\begin{lstlisting}[caption=projection\_all,label=pro.py]
-def projection_all(n:list[Statement],r:str,tc:TypeChecker) -> list[Stmt]:
-    result:list[Stmt] = []
-    for node in n:
-        if isinstance(node,Import) or isinstance(node,ImportFrom) or isinstance(node,ImportAll):
-            result += [projection_md(node)]
-        elif isinstance(node,ClassDef):
-            result += [projection_class(node,r,tc)]
-        elif isinstance(node,FuncDef):
-            result += [projection_func(node,r,tc)]
-        elif isinstance(node,Block):
-            result += projection_block(node.body,r,tc)
-        else:
-            result += [projection_stm(node,r,tc)]
-    return help_func.normalize_block(result)
-\end{lstlisting}
-\texttt{isinstance()}によって文(\texttt{node})の型はimport，クラス定義，関数定義，ブロック(文のリスト)，文のいずれかとなり，それぞれの定義によって
-射影された結果をresultに加えていく．射影された結果は最後に正規化(normalize)される．
-%%%%%%%%%%%%%%%%%%
-＜projection\_exp＞
-
-式(Expression)の射影関数projection\_expは式\textsf{n}，射影される参加者名\textsf{r}，型チェッカー\textsf{tc}を引数にとり，文字列を返す関数である．
-Code \ref{pro_e.py}は4.3.2節で紹介したメソッド呼び出しの射影$\projection{Exp.f(\overline{Exp}):\tau}{A}$の一部である．メソッド呼び出しの形が$e.f(\overline{e})$とすると，$\textsf{Expression} \rightarrow \textsf{CallExpression}$のダウンキャストよりパラメータ$e.f$はn.calleeとなり，パラメータ$\overline{e}$はn.argsとなる．
-パラメータ$e.f$を$e.f(\overline{e})$とすると，$\textsf{Expression} \rightarrow \textsf{MemberExpression}$のダウンキャストにより$e$をオブジェクト，$f$がメソッド名であると判別している．7行目ではメソッド呼び出し全体の型に射影される参加者名が含まれるか場合分けをしている．
-射影される参加者が含まれている場合は射影定義に従って引数にあたる$\overline{e}$に対して射影を再び行う．全てのパラメータが文字列となれば最後に結合させて返す．
-
-\begin{lstlisting}[caption=pro\_e.py,label=pro_e.py]
-def projection_exp(n:Expression,r:str,tc:TypeChecker) -> str:
-  ... 
-  elif isinstance(n, CallExpr):
-    ... 
-    elif isinstance(n.callee, Mypy.nodes.MemberExpr):
-      exp_list_i = []
-      if r in help_func.rolesOf(n,tc): # R in e.f(e')
-        for exp_i in n.args:
-          exp_list_i.append(projection_exp(exp_i ,r,tc))
-        exp_var_i = ','.join(exp_list_i)
-        return projection_exp(n.callee.expr,r,tc) + '.' + n.callee.name + '(' + exp_var_i + ')'
-      else:
-        ... 
-\end{lstlisting}
-
-%%%%%%%%%%%%%%%%%%
-＜projection\_stm, projection\_block＞
-文(Statement)の射影関数projection\_stmは文\textsf{s}，射影される参加者名\textsf{r}，型チェッカー\textsf{tc}を引数にとり，\textsf{Stmt}を返す関数である．
-ブロックの射影関数projection\_blockはStatementのリスト\textsf{s\_list}，射影される参加者名\textsf{r}，型チェッカー\textsf{tc}を引数にとり，\textsf{Stmt}のリストを返す関数である．
-projection\_blockでは，分岐があるStatementと分岐がないStatementで場合分けされる．分岐がある場合は条件(4行目,4.3.2節selectを参照)を満たしたときMatch文のデータ構造として値が返される(7行目)．
-分岐がない場合はリストの先頭のStatementに対してprojection\_stmを呼び出し，残りはprojection\_blockで再帰的に呼び出す(11行目)．
-\begin{lstlisting}[caption=pro\_s.py]
-def projection_block(s_list:list[Statement],r:str,tc:TypeChecker)-> list[Stmt]:
-  ... 
-  t = s.expr.accept(tc.expr_checker) 
-    if isinstance(t,mypy.types.Instance) and 'enum' in t.type.defn.name and r in rolesOf(s.expr,tc) and isinstance(s.expr,mypy.nodes.CallExpr) and isinstance(s.expr.callee,mypy.nodes.MemberExpr) and s.expr.callee.name == 'select':
-        if len(s.expr.args) == 1:
-            pro_args = projection_exp(s.expr.args[0],r,tc)
-            return [Match(projection_exp(s.expr,r,tc),[pro_args],[Block(projection_block(s_list[1:],r,tc))])]
-        else:
-          ... 
-    else:
-    return [projection_stm(s,r,tc)] + projection_block(s_list[1:],r,tc) 
-def projection_stm(s:Statement,r:str,tc:TypeChecker) -> Stmt:
-  ... 
-\end{lstlisting}
-%%%%%%%%%%%%%%%%%%%
-＜projection\_class＞
-クラス定義(ClassDef)の射影関数projection\_classは文\textsf{n}，射影される参加者名\textsf{r}，型チェッカー\textsf{tc}を引数にとり， 新しく定義したClassDefのデータ構造\textsf{ClassDef}を返す関数である．
-新しいClassDefクラスmypy標準のClassDefクラスのパラメータに，参加者のパラメータ(\texttt{rolename})が加わった構造をしている．継承されるクラスのリスト(\texttt{base\_type\_vars})の先頭はCh1,Ch2,Ch3のいずれか
-となっており，それぞれ参加者1,2,3者の振舞いが関係するクラスであると明示することで射影の際に\texttt{rolename}を取り出すことができる．
-クラス定義の入れ子になっている部分は\texttt{defs}に該当し，これはStatementのリストである．クラス定義内に関数定義が出てくる場合は\texttt{defs}の先頭に対してprojection\_func()を呼び出す(7行目)．
-その他の式や文である場合はprojection\_blockを呼び出して，各Statementに対して射影を行なっていく(9行目)．
-\begin{lstlisting}[caption=pro\_class.py]
-def projection_class(n:ClassDef,r:str,tc:TypeChecker) -> ClassDef:
-  if 'Ch1' in str(n.base_type_exprs[0]) or 'Ch2' in str(n.base_type_exprs[0]) or 'Ch3' in str(n.base_type_exprs[0]) and r in str(n.base_type_exprs[0]):
-      exprs:list[str] = []
-      for exp in n.base_type_exprs[1:]:
-          exprs += [(projection_exp(exp,r,tc))]
-      if type(n.defs.body[0]) == FuncDef: 
-          return ClassDef(n.name,r,exprs,projection_func(n.defs.body[0],r,tc))
-      else: 
-          return ClassDef(n.name,r,exprs,projection_block(n.defs.body,r,tc))
-  ... 
-\end{lstlisting}
-%%%%%%%%%%%%%%%%%%%
-＜projection\_func＞
-関数定義(FuncDef)の射影関数projection\_funcは文\textsf{n}，射影される参加者名\textsf{r}，型チェッカー\textsf{tc}を引数にとり， 新しく定義したFuncDefのデータ構造\textsf{FuncDef}を返す関数である．
-projection\_funcは主に引数の変数に対する処理を行う．変数の型注釈に対して射影される参加者が関係ある，例えば$\texttt{x:At[str,Client]}$といった引数をClientに対して射影する場合は変数だけを残し，型注釈は消す．
-変数の型注釈に対して射影される参加者が関係ない場合は，その変数は引数のリストから削除する．関数定義後の式や文はprojection\_blockで射影を行う(8,10行目)．
-\begin{lstlisting}[caption=pro\_func.py]
-def projection_func(n:FuncDef, r:str, tc:TypeChecker) -> FuncDef:
-  args:list[str] = []
-  if len(n.arguments) != 0:
-      for arg in n.arguments:
-          if arg.type_annotation is not None and r in str(arg.type_annotation):
-              args.append(arg.variable.name)
-          ... 
-      return FuncDef(n.name,args,projection_block(n.body.body,r,tc))
-  else:
-      return FuncDef(n.name,[],projection_block(n.body.body,r,tc))
-\end{lstlisting}
-%%%%%%%%%%%%%%%%%%%
-＜projection\_md＞
-PyChoralプログラムのimport文はPythonプログラムへそのまま文字列として生成する．
-\begin{lstlisting}[caption=pro\_md.py]
-def projection_md(n:mypy.nodes.Statement) -> Stmt:
-    if isinstance(n,mypy.nodes.Import):
-        return Import(n.ids)
-  ... 
-\end{lstlisting}
-%%%%%%%%%%%%%%%%%%%
-＜help\_function＞
-help\_functionはここまで紹介してきたprojectionの補助をする関数の集合である．
-$\texttt{rolesOf()}$は式(\textsf{Expression})の型情報から参加者名を取り出す関数である．
-$\texttt{rolesOf\_t()}$は型注釈から参加者名を取り出す関数である．
-$\texttt{merge(),merge\_block()}$は2つの文あるいは文のリストをマージする関数である．
-$\texttt{normalize(),normalize\_block()}$は文や文のリストを正規化する関数である．
-\begin{lstlisting}[caption=help\_func.py]
-def rolesOf(n:Expression, typeChecker:TypeChecker) -> list[str]:
-  ... 
-def rolesOf_t(n:Type | None, typeChecker:TypeChecker) -> list[str]:
-  ... 
-def merge_block(s1:list[Stmt],s2:list[Stmt]) -> list[Stmt]:
-    merged_list:list[Stmt] = []
-    for (t1,t2) in zip(s1,s2):
-        merged_list.append(merge(t1,t2))
-    return merged_list
-
-def merge(s1:Stmt, s2:Stmt) -> Stmt: 
+ class Pass(Stmt):
+   pass
+ class Return(Stmt):
+     def __init__(self, exp:str):
+         self.expr = exp
+ class ClassDef(Stmt):
+     def __init__(self,name:str,rolename:str,base_type_vars:list[str],defs:Block):
+         self.name = name
+         self.rolename = rolename
+         self.base_type_vars = base_type_vars
+         self.defs = defs
  ... 
-
-def normalize_block(s_list:list[Stmt]) -> list[Stmt]:
-  ... 
-def normalize(s:Stmt) -> Stmt:
-  ... 
+ 
+ def stmt_to_string(s:Stmt,indent:int) -> str:
+     if isinstance(s,Pass):
+             return ' '*indent + 'pass'
+     elif isinstance(s,Return):
+         return ' '*indent + 'return ' + s.expr
+     elif isinstance(s,ClassDef):
+         return ' '*indent + 'class ' + s.name + '(' + ','.join(s.base_type_vars) + '):\n' + stmt_to_string(s.defs,indent+4) + '\n'
+     ...
 \end{lstlisting}
+18,20,22行目に出てくる関数\texttt{isinstance(object,T)}は，Pythonに標準で備わっている関数である．この関数は，指定されたクラスまたは型\texttt{T}に\texttt{object}が属しているかどうかを判定する．
+本研究では，関数\texttt{isinstance}をクラスまたは型の制限に使用している．
+関数\texttt{stmt\_to\_string}は引数に構文木\texttt{s}とインデントの深さを調整するための値\texttt{indent}を引数にとり，文字列を返す関数である．
+生成された各参加者のファイルへ正常なPythonプログラムとして印字するために，改行やインデントを考慮している．
+
+各参加者のプログラムの実行にはPythonの標準ライブラリに含まれる\textsf{multiprocessing}モジュールの機能を利用する．
+\textsf{multiprocessing}モジュールが提供するProcessクラス，Pipeを使用することで複数のプログラムの並列実行ができる．
+Code \ref{run}は参加者が2人のコレオグラフィを実行するランタイムである．
+参加者A,Bの異なるプロセスを起動し，それぞれが\textsf{connect}関数を呼び出す．
+Pipeを使用してプロセス間通信を行い，各プロセスは異なる関数\textsf{run\_A},\textsf{run\_B}を呼び出す．
+\begin{lstlisting}[caption = runtime , label = run]
+ parent_pipe = None
+
+ def start_processes(f_A, f_B):
+     pipe_A, pipe_B = Pipe()
+     pa = Process(target=connect, args=(f_A,pipe_A,))
+     pb = Process(target=connect, args=(f_B,pipe_B,))
+     pa.start()
+     pb.start()
+     pa.join() 
+     pb.join()
+
+ def connect(f,pipe):
+     global parent_pipe
+     parent_pipe = pipe
+     f()
+\end{lstlisting}
+1行目の\texttt{parent\_pipe}はプロセス間でデータをやり取りするためのPipeオブジェクトを格納するためのグローバル変数である．
+3-10行目では，関数\textsf{start\_process}によって2つのプロセスを作成し，それぞれ異なる関数\textsf{f\_A}および\textsf{f\_B}を実行させる．
+各プロセスはPipeオブジェクトを生成し，関数\textsf{connect}に渡す．
+\textsf{start}メソッドで関数\textsf{f\_A},\textsf{f\_B}を実行し，\textsf{join}メソッドでプロセスの終了を待機する．
+11-14行目はPipeを繋ぐ関数\textsf{connect}である．Pipeオブジェクトをグローバル変数\texttt{parent\_pipe}に設定する．
+これにより，関数\textsf{f}内で\texttt{parent\_pipe}を使用してプロセス間の通信を行うことができる．
+
+
+%%%%%%%%%%%%%%%%%
+%＜projection\_all＞
+
+%PyChoralプログラムの射影をするときはまず\textsf{projection\_all}が呼ばれる．関数\textsf{projection\_all}は
+%Statementのリスト\textsf{n}，射影される参加者名\textsf{r}，型チェッカー\textsf{tc}を引数にとり，新しいデータ構造を返す関数である．
+%\begin{lstlisting}[caption=projection\_all,label=pro.py]
+%def projection_all(n:list[Statement],r:str,tc:TypeChecker) -> list[Stmt]:
+%    result:list[Stmt] = []
+%    for node in n:
+%        if isinstance(node,Import) or isinstance(node,ImportFrom) or isinstance(node,ImportAll):
+%            result += [projection_md(node)]
+%        elif isinstance(node,ClassDef):
+%            result += [projection_class(node,r,tc)]
+%        elif isinstance(node,FuncDef):
+%            result += [projection_func(node,r,tc)]
+%        elif isinstance(node,Block):
+%            result += projection_block(node.body,r,tc)
+%        else:
+%            result += [projection_stm(node,r,tc)]
+%    return help_func.normalize_block(result)
+%\end{lstlisting}
+%\texttt{isinstance()}によって文(\texttt{node})の型はimport，クラス定義，関数定義，ブロック(文のリスト)，文のいずれかとなり，それぞれの定義によって
+%射影された結果をresultに加えていく．射影された結果は最後に正規化(normalize)される．
+%%%%%%%%%%%%%%%%%%
+%＜projection\_exp＞
+
+%式(Expression)の射影関数projection\_expは式\textsf{n}，射影される参加者名\textsf{r}，型チェッカー\textsf{tc}を引数にとり，文字列を返す関数である．
+%Code \ref{pro_e.py}は4.3.2節で紹介したメソッド呼び出しの射影$\projection{Exp.f(\overline{Exp}):\tau}{A}$の一部である．メソッド呼び出しの形が$e.f(\overline{e})$とすると，$\textsf{Expression} \rightarrow \textsf{CallExpression}$のダウンキャストよりパラメータ$e.f$はn.calleeとなり，パラメータ$\overline{e}$はn.argsとなる．
+%パラメータ$e.f$を$e.f(\overline{e})$とすると，$\textsf{Expression} \rightarrow \textsf{MemberExpression}$のダウンキャストにより$e$をオブジェクト，$f$がメソッド名であると判別している．7行目ではメソッド呼び出し全体の型に射影される参加者名が含まれるか場合分けをしている．
+%射影される参加者が含まれている場合は射影定義に従って引数にあたる$\overline{e}$に対して射影を再び行う．全てのパラメータが文字列となれば最後に結合させて返す．
+%
+%\begin{lstlisting}[caption=pro\_e.py,label=pro_e.py]
+%def projection_exp(n:Expression,r:str,tc:TypeChecker) -> str:
+%  ... 
+%  elif isinstance(n, CallExpr):
+%    ... 
+%    elif isinstance(n.callee, Mypy.nodes.MemberExpr):
+%      exp_list_i = []
+%      if r in help_func.rolesOf(n,tc): # R in e.f(e')
+%        for exp_i in n.args:
+%          exp_list_i.append(projection_exp(exp_i ,r,tc))
+%        exp_var_i = ','.join(exp_list_i)
+%        return projection_exp(n.callee.expr,r,tc) + '.' + n.callee.name + '(' + exp_var_i + ')'
+%      else:
+%        ... 
+%\end{lstlisting}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%＜projection\_stm, projection\_block＞
+
+%文(Statement)の射影関数projection\_stmは文\textsf{s}，射影される参加者名\textsf{r}，型チェッカー\textsf{tc}を引数にとり，\textsf{Stmt}を返す関数である．
+%ブロックの射影関数projection\_blockはStatementのリスト\textsf{s\_list}，射影される参加者名\textsf{r}，型チェッカー\textsf{tc}を引数にとり，\textsf{Stmt}のリストを返す関数である．
+%projection\_blockでは，分岐があるStatementと分岐がないStatementで場合分けされる．分岐がある場合は条件(4行目,4.3.2節selectを参照)を満たしたときMatch文のデータ構造として値が返される(7行目)．
+%分岐がない場合はリストの先頭のStatementに対してprojection\_stmを呼び出し，残りはprojection\_blockで再帰的に呼び出す(11行目)．
+%\begin{lstlisting}[caption=pro\_s.py]
+%def projection_block(s_list:list[Statement],r:str,tc:TypeChecker)-> list[Stmt]:
+%  ... 
+%  t = s.expr.accept(tc.expr_checker) 
+%    if isinstance(t,mypy.types.Instance) and 'enum' in t.type.defn.name and r in rolesOf(s.expr,tc) and isinstance(s.expr,mypy.nodes.CallExpr) and isinstance(s.expr.callee,mypy.nodes.MemberExpr) and s.expr.callee.name == 'select':
+%        if len(s.expr.args) == 1:
+%            pro_args = projection_exp(s.expr.args[0],r,tc)
+%            return [Match(projection_exp(s.expr,r,tc),[pro_args],[Block(projection_block(s_list[1:],r,tc))])]
+%        else:
+%          ... 
+%    else:
+%    return [projection_stm(s,r,tc)] + projection_block(s_list[1:],r,tc) 
+%def projection_stm(s:Statement,r:str,tc:TypeChecker) -> Stmt:
+%  ... 
+%\end{lstlisting}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%＜projection\_class＞
+
+%クラス定義(ClassDef)の射影関数projection\_classは文\textsf{n}，射影される参加者名\textsf{r}，型チェッカー\textsf{tc}を引数にとり， 新しく定義したClassDefのデータ構造\textsf{ClassDef}を返す関数である．
+%新しいClassDefクラスmypy標準のClassDefクラスのパラメータに，参加者のパラメータ(\texttt{rolename})が加わった構造をしている．継承されるクラスのリスト(\texttt{base\_type\_vars})の先頭はCh1,Ch2,Ch3のいずれか
+%となっており，それぞれ参加者1,2,3者の振舞いが関係するクラスであると明示することで射影の際に\texttt{rolename}を取り出すことができる．
+%クラス定義の入れ子になっている部分は\texttt{defs}に該当し，これはStatementのリストである．クラス定義内に関数定義が出てくる場合は\texttt{defs}の先頭に対してprojection\_func()を呼び出す(7行目)．
+%その他の式や文である場合はprojection\_blockを呼び出して，各Statementに対して射影を行なっていく(9行目)．
+%\begin{lstlisting}[caption=pro\_class.py]
+%def projection_class(n:ClassDef,r:str,tc:TypeChecker) -> ClassDef:
+%  if 'Ch1' in str(n.base_type_exprs[0]) or 'Ch2' in str(n.base_type_exprs[0]) or 'Ch3' in str(n.base_type_exprs[0]) and r in str(n.base_type_exprs[0]):
+%      exprs:list[str] = []
+%      for exp in n.base_type_exprs[1:]:
+%          exprs += [(projection_exp(exp,r,tc))]
+%      if type(n.defs.body[0]) == FuncDef: 
+%          return ClassDef(n.name,r,exprs,projection_func(n.defs.body[0],r,tc))
+%      else: 
+%          return ClassDef(n.name,r,exprs,projection_block(n.defs.body,r,tc))
+%  ... 
+%\end{lstlisting}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%＜projection\_func＞
+
+%関数定義(FuncDef)の射影関数projection\_funcは文\textsf{n}，射影される参加者名\textsf{r}，型チェッカー\textsf{tc}を引数にとり， 新しく定義したFuncDefのデータ構造\textsf{FuncDef}を返す関数である．
+%projection\_funcは主に引数の変数に対する処理を行う．変数の型注釈に対して射影される参加者が関係ある，例えば$\texttt{x:At[str,Client]}$といった引数をClientに対して射影する場合は変数だけを残し，型注釈は消す．
+%変数の型注釈に対して射影される参加者が関係ない場合は，その変数は引数のリストから削除する．関数定義後の式や文はprojection\_blockで射影を行う(8,10行目)．
+%\begin{lstlisting}[caption=pro\_func.py]
+%def projection_func(n:FuncDef, r:str, tc:TypeChecker) -> FuncDef:
+%  args:list[str] = []
+%  if len(n.arguments) != 0:
+%      for arg in n.arguments:
+%          if arg.type_annotation is not None and r in str(arg.type_annotation):
+%              args.append(arg.variable.name)
+%          ... 
+%      return FuncDef(n.name,args,projection_block(n.body.body,r,tc))
+%  else:
+%      return FuncDef(n.name,[],projection_block(n.body.body,r,tc))
+%\end{lstlisting}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%＜projection\_md＞
+
+%PyChoralプログラムのimport文はPythonプログラムへそのまま文字列として生成する．
+%\begin{lstlisting}[caption=pro\_md.py]
+%def projection_md(n:mypy.nodes.Statement) -> Stmt:
+%    if isinstance(n,mypy.nodes.Import):
+%        return Import(n.ids)
+%  ... 
+%\end{lstlisting}
+
 %%%%%%%%%%%%%%%%%%
 \chapter{PyChoralを利用したアプリケーションによる評価}
-この節では実装を完成させた後，PyChoral言語を使用したプログラム例とコンパイル時に生成される各参加者のプログラムにより本研究の有用性を示す．
-(クイックソート，マージソート，分散認証システム，etc)
+Code \ref{merge}はChoralのプログラム例の一つであるParallel MergeSort \cite{ex_choral}をPyChoralで実装したものである．
+これは，PyChoralを用いた並列アルゴリズムを示し，通信の参加者のインスタンス化が分散ロジックを記述する際にどれだけPythonプログラマにとって役に立つのかを示すものである．
+\begin{lstlisting}[caption = MergeSort.py, label = merge]
+ class Mergesort(Ch3[M,S1,S2]):
+     def __init__(self, m, s1, s2, chMS1, chS1S2, chS2M):
+         self.m:Type[M] = m
+         self.s1:Type[S1] = s1
+         self.s2:Type[S2] = s2
+         self.chMS1:SymChannel[object,M,S1] = chMS1
+         self.chS1S2:SymChannel[object,S1,S2] = chS1S2
+         self.chS2M:SymChannel[object,S2,M] = chS2M
+ 
+     def sort(self,a:At[list[int],M]) -> At[list[int],M]:
+         if len(a)@self.m() > 1@self.m():
+             self.chMS1.select(MChoice.L@self.m())
+             self.chS2M.select(MChoice.L@self.m())
+             mb = ^Mergesort[S1,S2,M](self.s1,self.s2,self.m,self.chS1S2,self.chS2M,self.chMS1)^
+             mc = ^Mergesort[S2,M,S1](self.s2,self.m,self.s1,self.chS2M,self.chMS1,self.chS1S2)^
+             pivot:At[float,M] = float(floor(len(a)/2@self.m())@self.m())@self.m()
+             b:list[int] = a[0:int(pivot)]
+             lhs:At[list[int],S1] = mb.sort(self.chMS1.com(b@self.m()))
+             c:list[int] = a[int(pivot):len(a)]
+             rhs:At[list[int],S2] = mc.sort(self.chS2M.com(c@self.m()))
+             return self.merge(self.chMS1.com(lhs),self.chMS1.com(rhs))
+         else:
+             self.chMS1.select(MChoice.R@self.m())
+             self.chS2M.select(MChoice.R@self.m())
+             return a
+             
+     def merge(self,lhs:At[list[int],S1],rhs:At[list[int],S2]) -> At[list[int],M]:
+         ... 
+\end{lstlisting}
+クラス\texttt{MergeSort}の参加者であるMergerと2つのSorterはパラメータ\texttt{M,S1,S2}として扱う．
+2-8行目ではコンストラクタを生成している．\texttt{chS2M,chS1S2,chS2M}は型\texttt{T}の値を
+双方向(\texttt{R1}$\rightleftarrows$\texttt{R2})に送り合えるチャネル\texttt{SymChannel[T,R1,R2]}の型をもつ．
+10-25行目はメソッド\textsf{sort}の定義であり，リストを分割する必要性を確認する条件式で構成される．
+11-21行目は分割する場合である．16行目でリストの中心(\texttt{pivot})を見つけ，それを境目にリストを分割して得られるサブリストを2つのSorterに送信する．
+14,15行目では分割されたリストをさらにソートするために，MergerとSorterの役割を入れ替えながらMergeSortを再帰的に呼び出す．
+このようにMergerとSorterの役割を代えながらリストの分割ができなくなるまでソートを行う．
+各Sorterによって順序付けられたリストは21行目にあるメソッド\textsf{merge}の呼び出しによって結合される．
+27行目にある\textsf{merge}はSorterがもつ2つのリストをMergerが結合するメソッドである．
+このメソッドはローカルであり，リストの結合を逐次的なアルゴリズムのように実行する．
+PyChoralで記述したMergeSortのコードは参加者の型情報により，Python言語に類似したプログラム一つで，リストのソートを並列して実行可能であるPythonプログラムを生成できる．
+さらに，それらは理論的にデッドロックフリー性をもつ．
+
+%パラメータとしてMergeSortプログラムに与えた\texttt{M,S1,S2}および
+%\begin{lstlisting}
+% M = TypeVar('M', bound='Role')
+% S1 = TypeVar('S1', bound='Role')
+% S2 = TypeVar('S2', bound='Role')
+%
+% class MChoice(Enum):
+%     L = "L"
+%     R = "R"
+%\end{lstlisting}
+    
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\chapter{関連研究}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{まとめ，今後の課題}
-本研究はPythonを拡張したコレオグラフィックプログラミング言語PyChoralを実装した．
-PyChoralプログラムは本研究におけるエンドポイント射影の定義によって各参加者のPythonプログラムが生成される．
-エンドポイント射影理論によりPyChoralプログラム中の式は文字列として，その他は抽象クラス\textsf{Stmt}を親クラスとした新しいデータ構造として射影される．
-生成された各参加者のPythonプログラムはコレオグラフィに従っているため，デッドロック等の並行性に起因するエラーが生じないことが保証されている．これにより，
-マルチスレッド環境におけるプログラムが単一の言語で記述されるプログラムによって実装可能となり，Pythonでマルチスレッドプログラムをコーディングするプログラマ
-の手助けとなる．
+本研究はPythonを拡張したコレオグラフィックプログラミング言語PyChoralを構築した．
+%本研究におけるエンドポイント射影の定義によってPyChoralプログラムから各参加者のPythonプログラムが生成される．
+PyChoralにおけるエンドポイント射影の理論によりPyChoralプログラム中の式は文字列として，その他は抽象クラス\textsf{Stmt}を親クラスとした新しいデータ構造として射影される．
+射影された新たな構文木は生成される各参加者のファイルに印字され，Pythonプログラムとして実行可能なコードで出力される．
+生成された各参加者のPythonプログラムはコレオグラフィに従っているため，デッドロック等の並行性に起因するエラーが生じないことが理論的に保証されている．
+また，PyChoralの構文はPythonと同一であることから，PythonのIDEやライブラリを使うことができる．
+これにより，Pythonの標準的な仕組みを保ったまま，単一のプログラムで並行・分散プログラミングができるようになる．
 
-今後の課題としては以下の点がある．
-\begin{itemize}
-  \item 実装の完成
-  
-  現段階ではPyChoralプログラムをmypytestでコンパイルした時に結果としてターミナルに特定の参加者の
-  Pythonプログラムが文字列として出力されるが，最終的には各参加者のPythonプログラムファイルが新たに生成されるようにする．また，記述したコードのバグを修正する．
-  \item 実装したコンパイラによるPyChoralプログラムを制作する(4.5節)
-    
-\end{itemize}
-
+生成されるPythonプログラムのデッドロックフリー性を証明することと，Python言語が多く使用されているIoTや機械学習を扱うプロジェクトにPyChoralを応用して更なる有用性を示すことが今後の課題である．
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\section*{謝辞}
@@ -806,33 +867,37 @@ PyChoralプログラムは本研究におけるエンドポイント射影の定
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \appendix
 
-\chapter{Definition of Projection, Merging, Normalizer}
+\chapter{Projection, Merging, Normalizerの定義}
 \section{Projection to Python}
 
 \begin{alignat*}{2}
   %%% ClassDef %%%
-  &(Class)~~~ &&\projection{\textsf{class} ~id~(Ch[\overline{\cyan{B}}],\overline{Exp}):\overline{Stm}}{A}=
+  &(Class)~~~ &&\projection{\textsf{class} ~id~(Ch[\overline{\cyan{R}}],\overline{Exp}):\overline{Stm}}{A}=
   \begin{cases}
-    \textsf{class} ~id\_{\cyan{A}}~(\overline{\projection{Exp}{A}}):\overline{\projection{Stm}{A}} & \text{if}~~ {\cyan{A}} \in \overline{\cyan{B}}\\
-    \text{absent} & \text{if}~~ {\cyan{A}} \notin \overline{\cyan{B}}
+    \textsf{class} ~id\_{\cyan{A}}~(\overline{\projection{Exp}{A}}):\overline{\projection{Stm}{A}} & \text{if}~~ {\cyan{A}} \in \overline{\cyan{R}}\\
+    \text{absent} & \text{if}~~ {\cyan{A}} \notin \overline{\cyan{R}}
   \end{cases}\\
+  \\
   \\
   %%% FuncDef %%%
   &(Func)~~~ &&\projection{\textsf{def} ~id~(\overline{id:TE}):\overline{Stm}}{A} = \textsf{def} ~id~ (\overline{id}):\overline{\projection{Stm}{A}}\\
   \\
+  \\
   %%% Expression %%%
   % Literal
-  &(Exp)~~~ &&\projection{lit\mblue{@}(\overline{{\color{cyan}{B}}()}):\tau}{A}=
+  &(Exp)~~~ &&\projection{lit\mblue{@}(\overline{{\color{cyan}{R}}()}):\tau}{A}=
   \begin{cases}
-    lit & \text{if}~~ {\color{cyan}A} \in \overline{\color{cyan}{B}}\\
+    lit & \text{if}~~ {\color{cyan}A} \in \overline{\color{cyan}{R}}\\
     \texttt{Unit.id} &\text{otherwise}
   \end{cases}\\
+  \\
   %field
   &&&\projection{Exp.id:\tau}{A}=
   \begin{cases}
     \projection{Exp}{A}.id &\text{if}~~{\color{cyan}A} \in \text{rolesOf} (Exp.id)\\
     \text{absent} &\text{otherwise}
   \end{cases}\\
+  \\
   %function
   &&&\projection{f(\overline{Exp}):\tau}{A} =
   \begin{cases}
@@ -840,35 +905,42 @@ PyChoralプログラムは本研究におけるエンドポイント射影の定
     \texttt{Unit.id}(f(\overline{\projection{Exp}{A}})) &\text{if}~~ {\color{cyan}A} \in \text{rolesOf}(\overline{Exp}) \wedge {\color{cyan}A} \notin \text{rolesOf} (f(\overline{Exp}))\\
     \texttt{Unit.id}(\overline{\projection{Exp}{A}}) &\text{otherwise}
   \end{cases}\\
+  \\
   %method
-  &&&\projection{Exp.f(\overline{Exp}):\tau}{A}=
+  &&&\projection{Exp_1.f(\overline{Exp_2}):\tau}{A}=
   \begin{cases}
-    \projection{Exp}{A}.f(\overline{\projection{Exp}{A}}) \\
-    ~~~~~~~\text{if}~~ {\color{cyan}A} \in \text{rolesOf}(Exp) \wedge {\color{cyan}A} \in \text{rolesOf}(\overline{Exp})\\
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \wedge {\color{cyan}A} \in \text{rolesOf}(Exp.f(\overline{Exp}))\\
-    \texttt{Unit.id}(\projection{Exp}{A}.f(\overline{\projection{Exp}{A}})) \\
-    ~~~~~~~\text{if}~~ {\color{cyan}A} \in \text{rolesOf}(Exp) \wedge {\color{cyan}A} \notin \text{rolesOf}(Exp.f(\overline{Exp}))\\
-    \texttt{Unit.id}(\projection{Exp}{A},\overline{\projection{Exp}{A}}) ~~~~~\text{otherwise}
+    \projection{Exp_1}{A}.f(\overline{\projection{Exp_2}{A}}) \\
+    ~~~~~~~~~~~~~~\text{if}~~ {\color{cyan}A} \in \text{rolesOf}(Exp_1) \wedge {\color{cyan}A} \in \text{rolesOf}(\overline{Exp_2})\\
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \wedge {\color{cyan}A} \in \text{rolesOf}(Exp_1.f(\overline{Exp_2}))\\
+    \texttt{Unit.id}(\projection{Exp_1}{A}.f(\overline{\projection{Exp_2}{A}})) \\
+    ~~~~~~~~~~~~~~\text{if}~~ {\color{cyan}A} \in \text{rolesOf}(Exp_1) \wedge {\color{cyan}A} \notin \text{rolesOf}(Exp_1.f(\overline{Exp_2}))\\
+    \texttt{Unit.id}(\projection{Exp_1}{A},\overline{\projection{Exp_2}{A}}) ~~~~~\text{otherwise}
   \end{cases}\\
+  \\
   %create object
-  &&&\projection{C[\overline{\color{cyan}B}](\overline{Exp}):\tau}{A}=
+  &&&\projection{C[\overline{\color{cyan}R}](\overline{Exp}):\tau}{A}=
   \begin{cases}
-    \projection{C[\overline{\color{cyan}B}]}{A} (\overline{\projection{Exp}{A}}) & {\color{cyan}A} \in \overline{\color{cyan}B}\\
+    \projection{C[\overline{\color{cyan}R}]}{A} (\overline{\projection{Exp}{A}}) & {\color{cyan}A} \in \overline{\color{cyan}R}\\
     \texttt{Unit.id}(\overline{\projection{Exp}{A}}) &\text{otherwise}
   \end{cases}\\
+  \\
   % binary operator
   &&&\projection{Exp_1 ~BinOp~ Exp_2}{A} = \projection{Exp_1}{A} ~BinOp~ \projection{Exp_2}{A}\\
-  %role
-  &&&\text{rolesOf}(\_:\tau\mblue{@}(\overline{\color{cyan}B})) = {\overline{\color{cyan}B}}\\
-  &&&\text{rolesOf}(\overline{Exp}) = \bigcup_i \text{rolesOf}(Exp_i) \\
-  &&&\projection{\overline{Exp}}{A} = Exp'_1,Exp'_2,\cdots,Exp'_n ~~\text{where}~~ Exp'_i = \projection{Exp_i}{A}\\ 
   \\
-  \\ 
+  %role
+  &&&\text{rolesOf}(\_:\tau\mblue{@}(\overline{{\color{cyan}{R}}()})) = {\overline{\color{cyan}R}}\\
+  \\
+  &&&\text{rolesOf}(\overline{Exp}) = \bigcup_i \text{rolesOf}(Exp_i) \\
+  \\
+  &&&\projection{\overline{Exp}}{A} = Exp'_1,Exp'_2,\cdots,Exp'_n ~~~~\text{where}~~ Exp'_i = \projection{Exp_i}{A}\\ 
+  \\
   %%% Statement %%%
   %pass
   &(Stm)~~~ &&\projection{\mblue{pass}}{A} = \mblue{pass}\\
+  \\
   %return
   &&&\projection{\mblue{return} ~ Exp;}{A} = \mblue{return} ~ \projection{Exp}{A}\\
+  \\
   % e;s
   &&&\projection{Exp;\overline{Stm}}{A} =
   \begin{cases}
@@ -877,25 +949,31 @@ PyChoralプログラムは本研究におけるエンドポイント射影の定
     ~~~~~\mblue{case} ~\_\_: \text{assert False}; \\
     \projection{Exp}{A};\projection{\overline{Stm}}{A} ~~~~~ \text{otherwise}\\
   \end{cases}\\
+  \\
   % Assignment 
   &&& \projection{id:TE = Exp~;\overline{Stm}}{A} =
   \begin{cases}
     id = \projection{Exp}{A};\projection{\overline{Stm}}{A} & \text{if}~~ {\color{cyan}A} \in \text{rolesOf}(TE)\\
     \projection{Exp}{A};\projection{\overline{Stm}}{A} & \text{otherwise}
   \end{cases}\\
+  \\
   % OpAssignment
   &&& \projection{Exp_1 ~AsgOp~ Exp_2 ~; \overline{Stm}}{A} = \projection{Exp_1}{A} AsgOp~ \projection{Exp_2}{A} ~; \projection{\overline{Stm}}{A} \\
+  \\
   % If
   &&&\projection{\mblue{if}~Exp:Stm_1~;\mblue{else}:Stm_2 ~;\overline{Stm}}{A}=\\
   &&&
-  \begin{cases}
+  ~~~~~~~~~~~~\begin{cases}
     \mblue{if}~\projection{Exp}{A} : \projection{Stm_1}{A} ~; \mblue{else}:\projection{Stm_2}{A} ~;\projection{\overline{Stm}}{A} & \text{if}~~ \text{rolesOf}(Exp) = \cyan{A}\\
     \projection{Exp}{A} ~; \nl{\projection{Stm_1}{A}} \mg \nl{\projection{Stm_2}{A}} ~;\projection{\overline{Stm}}{A} & \text{otherwise}
   \end{cases}\\
+  \\
   % raise
   &&&\projection{\mblue{raise}~Exp}{A} = \mblue{raise}~\projection{Exp}{A}\\
+  \\
   % assert
   &&&\projection{\mblue{assert}~Exp}{A} = \mblue{assert}~\projection{Exp}{A}\\
+  \\
   % block
   &&&\projection{\overline{Stm}}{A} = Stm'_1,Stm'_2,\cdots,Stm'_n ~~\text{where}~~ Stm'_i = \projection{Stm_i}{A}\\  
 \end{alignat*}
@@ -905,15 +983,20 @@ PyChoralプログラムは本研究におけるエンドポイント射影の定
   % Statement
   & \text{Statement}\\
   % stm_list
+  \\
   & \overset{\color{red}.}{\mg} \overline{Stm} = \overset{\color{red}.}{\mg}(Stm_1, \cdots ,Stm_n) = \nl{Stm_1} \mg \cdots \mg \nl{Stm_n}\\
   % return
+  \\
   & \mblue{return}~Exp \mg \mblue{return}~Exp' = \mblue{return}~Exp \mg Exp'\\
   % raise
+  \\
   & \mblue{raise}~ Exp \mg \mblue{raise}~ Exp' = \mblue{raise}~ Exp \mg Exp'\\
   % assignment op
+  \\
   & (Exp_1 ~AsgOp~ Exp_2 ; \overline{Stm}) \mg (Exp'_1 ~AsgOp~ Exp'_2 ; \overline{Stm'})\\
   & ~~~~~~~ = (Exp_1 \mg Exp'_1) ~AsgOp~ (Exp_2 \mg Exp'_2) ; (\overline{Stm} \mg \overline{Stm'})\\
   % expression stmt
+  \\
   & (Exp ; \overline{Stm}) \mg (Exp' ; \overline{Stm'}) = (Exp \mg Exp') ; (\overline{Stm} \mg \overline{Stm'})\\
   % if 
   \\
@@ -927,6 +1010,7 @@ PyChoralプログラムは本研究におけるエンドポイント射影の定
   & \overline{Stm} ~~~~~~~~~~~~~~~~~~~~~~~~~~ \overline{Stm'} ~~~~~~~~~~~~~~~~~~~~~~~~~~ \overline{Stm} \mg \overline{Stm'}\\
   \\
   % match
+  \\
   & \mblue{match}~Exp: ~~~~~~~~~~~~~~~~~~~~\mblue{match}~Exp': ~~~~~~~~~~~~~~~~~~~~\mblue{match}~Exp \mg Exp':\\
   & ~~~\mblue{case}~id_a : Stm'_a; ~~~~~~~~~~~~~~~~\mblue{case}~id_a : Stm''_a; ~~~~~~~~~~~~~~~~\mblue{case}~id_a : Stm'_a \mg Stm''_a;\\
   & ~~~\cdots ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\cdots ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\cdots\\
@@ -936,28 +1020,34 @@ PyChoralプログラムは本研究におけるエンドポイント射影の定
   & ~~~\mblue{case}~~\_\_ ~: Stm'_{ex}; ~~~~~~~~~~~~~~~\mblue{case}~~\_\_ ~: Stm''_{ex}; ~~~~~~~~~~~~~~~\mblue{case}~~\_\_ ~:Stm'_{ex} \mg Stm''_{ex};\\
   & \overline{Stm} ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \overline{Stm'} ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \overline{Stm} \mg \overline{Stm'}\\
   \\
-  & \overline{Stm} \mg \overline{Stm'} = Stm_1 \mg Stm_1'~,~Stm_2 \mg Stm_2'~,~\cdots~,Stm_n \mg Stm'_n\\
+  & \overline{Stm} \mg \overline{Stm'} = \nl{Stm_1} \mg \nl{Stm_1'}~,~\nl{Stm_2} \mg \nl{Stm_2'}~,~\cdots~,\nl{Stm_n} \mg \nl{Stm'_n}\\
   \\
   % Expression
+  \\
   & \text{Expression}\\
+  \\
   & Exp \mg Exp' =
   \begin{cases}
     Exp & \text{if}~ Exp = Exp'\\
-    \text{error} & \text{if}~ Exp \neq Exp'
+    \text{\color{red}{error}} & \text{if}~ Exp \neq Exp'
   \end{cases}\\
 \end{align*}
 
-\section{normalizer}
+\section{Normalizer}
 \begin{align*}
   % Statement
   & \text{Statements}\\
+  \\
   & \nl{\mblue{pass}} = \mblue{pass}\\
+  \\
   & \nl{\mblue{return}~Exp} = \mblue{return} ~ \nl{Exp}\\
-  & {\scriptsize{\text{\color{Purple}NOOP}}}(Exp) = 
+  \\
+  & \nl{Exp;\overline{Stm}} =
   \begin{cases}
-    [blank] & \text{if}~~ Exp \in \{\texttt{Unit.id, None}\}\\
-    Exp & \text{otherwise}
+    \nl{\overline{Stm}} & \text{if}~~ {\scriptsize{\text{\color{Purple}NOOP}}}(\nl{Exp}) = [blank]\\
+    \nl{Exp} ; \nl{\overline{Stm}} & \text{otherwise}
   \end{cases}\\
+  \\
   & \nl{Exp_1 ~AsgOp~ Exp_2 ; \overline{Stm}} = 
   \begin{cases}
     \nl{Exp_1} ; \nl{\overline{Stm}} & \text{if}~~ {\scriptsize{\text{\color{Purple}NOOP}}}(\nl{Exp_2}) = [blank]\\
@@ -965,13 +1055,154 @@ PyChoralプログラムは本研究におけるエンドポイント射影の定
     \nl{\overline{Stm}} & \text{if}~~ {\scriptsize{\text{\color{Purple}NOOP}}}(\nl{Exp_1},\nl{Exp_2}) = [blank]\\
     \nl{Exp_1} AsgOp \nl{Exp_2} ; \nl{\overline{Stm}} & \text{otherwise}
   \end{cases}\\
-  & \nl{Exp;\overline{Stm}} =
-  \begin{cases}
-    \nl{\overline{Stm}} & \text{if}~~ {\scriptsize{\text{\color{Purple}NOOP}}}(\nl{Exp}) = [blank]\\
-    \nl{Exp} ; \nl{\overline{Stm}} & \text{otherwise}
-  \end{cases}\\
+  \\
+  & \nl{\mblue{if}~Exp:Stm_1~;~\mblue{else}:Stm_2 ~;~\overline{Stm}} = \mblue{if}~\nl{Exp}:\nl{Stm_1}~;~\mblue{else}:\nl{Stm_2}~;~\nl{\overline{Stm}}\\
+  \\
+  & \nl{\mblue{match}~Exp:~\overline{\mblue{case}~id:Stm}~;~\overline{Stm}} = \mblue{match}~\nl{Exp}:~\overline{\mblue{case}~id:\nl{Stm}}~;~\nl{\overline{Stm}}
+  \\
+  \\
+  \\
   % Expression
   & \text{Expressions}\\
-  & \nl{None} = None ~~~ \nl{id} = id 
+  \\
+  & {\scriptsize{\text{\color{Purple}NOOP}}}(Exp) = 
+  \begin{cases}
+    [blank] & \text{if}~~ Exp \in \{\texttt{Unit.id, None}\}\\
+    Exp & \text{otherwise}
+  \end{cases}\\
+  \\
+  & \nl{None} = None ~~~ \nl{id} = id
 \end{align*}
+
+\chapter{射影後のデータ構造}
+
+\begin{lstlisting}[numbers = none]
+  class Stmt:
+      pass
+
+  class Block(Stmt):
+      def __init__(self, body:list[Stmt], indent:int):
+          self.body = body
+          self.indent = indent
+
+  class Pass(Stmt):
+      pass
+
+  class Return(Stmt):
+      def __init__(self, exp:str):
+          self.expr = exp
+
+  class Raise(Stmt): 
+      def __init__(self, expr:str):
+          self.expr = expr
+
+  class Assert(Stmt): 
+      def __init__(self, expr:str):
+          self.expr = expr
+
+  class Es(Stmt): 
+      def __init__(self, exp:str):
+          self.expr = exp
+
+  class Es2(Stmt): 
+      def __init__(self, exp:str, stmt:list[Stmt]):
+          self.expr = exp
+          self.stmt = stmt
+
+  class Asg(Stmt): 
+      def __init__(self, lv:str, rv:str, type:Type):
+          self.lvalues = lv
+          self.rvalue = rv
+          self.type = type
+
+  class OpAsg(Stmt):
+      def __init__(self, lv:str, rv:str, op:str):
+          self.lvalue = lv
+          self.rvalue = rv
+          self.op = op
+
+  class If(Stmt): 
+      def __init__(self, exp:str, body:Block, else_body:Block):
+          self.expr = exp
+          self.body = body
+          self.else_body = else_body  
+
+  class Match(Stmt):
+      def __init__(self, sub:str, pat:list[str], bodies:list[Block]):
+          self.subject = sub
+          self.patterns = pat
+          self.bodies = bodies
+
+  class FuncDef(Stmt):
+      def __init__(self, name:str, arguments:list[str], body:Block):
+          self.name = name
+          self.arguments = arguments
+          self.body = body
+
+  class ClassDef(Stmt):
+      def __init__(self, name:str, rolename:str, base_type_vars:list[str], defs: Block):
+          self.name = name
+          self.rolename = rolename
+          self.base_type_vars = base_type_vars
+          self.defs = defs
+
+  class Import(Stmt):
+      def __init__(self, ids:list[str]):
+          self.ids = ids
+
+  class ImportFrom(Stmt):
+      def __init__(self, id:str, relative:int, names:list[str]):
+          self.id = id
+          self.relative = relative
+          self.names = names
+
+  class ImportAll(Stmt):
+      def __init__(self, id:str, relative:int):
+          self.id = id
+          self.relative = relative
+\end{lstlisting}
+  
+\chapter{3者間のコレオグラフィのランタイム}
+\begin{lstlisting}[numbers = none]
+  parent_pipeA = None 
+  parent_pipeB = None 
+  parent_pipeC = None 
+
+  roledict = {"A":parent_pipeA,"B":parent_pipeB,"C":parent_pipeC}
+
+  def start_processes(f_A, f_B, f_C):
+      pipe_AtoB, pipe_BtoA = Pipe()
+      pipe_BtoC, pipe_CtoB = Pipe()
+      pipe_CtoA, pipe_AtoC = Pipe()
+      pa = Process(target=connectA, args=(f_A,pipe_AtoB,pipe_AtoC,)) 
+      pb = Process(target=connectB, args=(f_B,pipe_BtoC,pipe_BtoA,)) 
+      pc = Process(target=connectC, args=(f_C,pipe_CtoA,pipe_CtoB,)) 
+      pa.start()
+      pb.start()
+      pc.start()
+      pa.join() 
+      pb.join()
+      pc.join()
+
+  def connectA(f,pipe_AtoB,pipe_AtoC):
+      global parent_pipeA
+      global roledict 
+      roledict = {"A":None,"B":pipe_AtoB,"C":pipe_AtoC}
+      print("pipe_AtoB,pipe_AtoC are connected")
+      f()
+
+  def connectB(f,pipe_BtoC,pipe_BtoA):
+      global parent_pipeB
+      global roledict 
+      roledict = {"A":pipe_BtoA,"B":None,"C":pipe_BtoC}
+      print("pipe_BtoC,pipe_BtoA are connected")
+      f()
+
+  def connectC(f,pipe_CtoA,pipe_CtoB):
+      global parent_pipeC
+      global roledict 
+      roledict = {"A":pipe_CtoA,"B":pipe_CtoB,"C":None}
+      print("pipe_CtoA,pipe_CtoB are connected")
+      f()
+\end{lstlisting}
 \end{document}

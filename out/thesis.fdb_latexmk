@@ -1,16 +1,18 @@
 # Fdb version 3
-["bibtex thesis"] 1706937478 "thesis.aux" "thesis.bbl" "thesis" 1706940441
+["bibtex thesis"] 1706964965 "thesis.aux" "thesis.bbl" "thesis" 1706964966
+  "jplain.bst" 0 -1 0 ""
+  "reference.bib" 1706964407 3312 6b3f14430f0fe37fd327e690f643f552 ""
+  "thesis.aux" 1706964965 5153 5fa448de226c9b1201c5e5a44273bd54 ""
   (generated)
-  "thesis.bbl"
   "thesis.blg"
-["dvipdf"] 1706940440 "out/thesis.dvi" "out/thesis.pdf" "out/thesis" 1706940441
-  "out/thesis.dvi" 1706940440 119056 5c7cf9f80eae2d3e5bac035a6ea85b16 "latex"
+  "thesis.bbl"
+["dvipdf"] 1706964965 "out/thesis.dvi" "out/thesis.pdf" "out/thesis" 1706964966
+  "out/thesis.dvi" 1706964964 120896 11ae7a8ea07aa467c521241a342f8d45 "latex"
   (generated)
   "out/thesis.pdf"
-["latex"] 1706940439 "/Users/onda/修論/thesis.tex" "out/thesis.dvi" "thesis" 1706940441
-  "/Users/onda/修論/thesis.tex" 1706940439 65742 13e9cf12f498c2cb19efe5ab20e807be ""
+["latex"] 1706964963 "/Users/onda/修論/thesis.tex" "out/thesis.dvi" "thesis" 1706964966
+  "/Users/onda/修論/thesis.tex" 1706964962 76499 c046528808de8b47c01e04f807eadee5 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
-  "/usr/local/texlive/2021/texmf-dist/fonts/tfm/jknappen/ec/tcrm1000.tfm" 1136768653 1536 e07581a4bb3136ece9eeb4c3ffab8233 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/tfm/ptex-fonts/jis/jis.tfm" 1463434352 468 53f854284f6afa6c36aaa2d1090ecc12 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/tfm/ptex-fonts/jis/jisg.tfm" 1463434352 468 53f854284f6afa6c36aaa2d1090ecc12 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/tfm/ptex-fonts/standard/tgoth10.tfm" 1463434352 856 7404843a5f798859944d7973a47821d5 ""
@@ -85,12 +87,12 @@
   "image/mypyprocess.png" 1701844479 29961 51b380af59d1736fd007479118ea8d73 ""
   "image/pychoralprocess.png" 1706266824 54452 2aca21c68dfd556d1c3ba264db3f0b73 ""
   "image/syntax.png" 1706928588 125080 90b6767266c1c89b5a85a53286920eb8 ""
-  "out/thesis.aux" 1706940440 5369 887b455a550cd972332a7dbdd9d908e8 "latex"
-  "out/thesis.toc" 1706940440 1241 2919b9b2adeda50278a8d55500e30269 "latex"
-  "thesis.bbl" 1706919929 616 140cf58005057cebd1ae5b9a334b3796 "bibtex thesis"
+  "out/thesis.aux" 1706964964 5153 5fa448de226c9b1201c5e5a44273bd54 "latex"
+  "out/thesis.toc" 1706964964 1420 7bf050bfc6db3253999bd9ddb2bc3f87 "latex"
+  "thesis.bbl" 1706964965 835 b0a7aad072f4b4be3414db3e53b5233e "bibtex thesis"
   "thesis.cls" 1702701551 3652 6ef4aead2f51a254ebf0f7b5374f2e23 ""
   (generated)
   "out/thesis.aux"
-  "out/thesis.log"
   "out/thesis.toc"
+  "out/thesis.log"
   "out/thesis.dvi"

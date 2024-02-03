@@ -3,48 +3,48 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: thesis.aux
 The style file: jplain.bst
 Database file #1: reference.bib
-Warning--to sort, need author or key in choral
 Warning--to sort, need author or key in Mypy
-You've used 4 entries,
+Warning--to sort, need author or key in ex_choral
+You've used 5 entries,
             2620 wiz_defined-function locations,
-            613 strings with 4939 characters,
-and the built_in function-call counts, 1382 in all, are:
-= -- 115
-> -- 31
-< -- 6
-+ -- 15
-- -- 10
-* -- 73
-:= -- 166
-add.period$ -- 10
-call.type$ -- 4
-change.case$ -- 17
+            620 strings with 5130 characters,
+and the built_in function-call counts, 1722 in all, are:
+= -- 142
+> -- 48
+< -- 7
++ -- 22
+- -- 16
+* -- 93
+:= -- 219
+add.period$ -- 13
+call.type$ -- 5
+change.case$ -- 23
 chr.to.int$ -- 0
-cite$ -- 6
-duplicate$ -- 80
-empty$ -- 135
-format.name$ -- 15
-if$ -- 328
+cite$ -- 7
+duplicate$ -- 97
+empty$ -- 159
+format.name$ -- 24
+if$ -- 401
 int.to.chr$ -- 0
-int.to.str$ -- 4
-missing$ -- 2
-newline$ -- 21
-num.names$ -- 4
-pop$ -- 46
+int.to.str$ -- 5
+missing$ -- 3
+newline$ -- 26
+num.names$ -- 6
+pop$ -- 53
 preamble$ -- 1
-purify$ -- 13
+purify$ -- 18
 quote$ -- 0
-skip$ -- 76
+skip$ -- 92
 stack$ -- 0
-substring$ -- 68
-swap$ -- 24
-text.length$ -- 6
+substring$ -- 73
+swap$ -- 26
+text.length$ -- 7
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 16
+type$ -- 20
 warning$ -- 2
-while$ -- 8
-width$ -- 5
-write$ -- 38
-is.kanji.str$ -- 37
+while$ -- 10
+width$ -- 6
+write$ -- 49
+is.kanji.str$ -- 49
 (There were 2 warnings)
